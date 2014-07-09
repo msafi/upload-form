@@ -1,0 +1,29 @@
+{
+  "name": "upload-form",
+  "version": "0.0.0",
+  "homepage": "https://github.com/msafi/upload-form",
+  "authors": [
+    "MK Safi <msafi@msafi.com>"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "license": "CC0 1.0 Universal",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "*",
+    "lodash": "*",
+    "angular-ui-bootstrap-bower": "*",
+    "jquery": "*",
+    "bootstrap": "*",
+    "ng-file-upload-shim": "*",
+    "ng-file-upload": "*"
+  }
+}
