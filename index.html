@@ -1,22 +1,40 @@
+<html ng-app="myApp">
 <head>
   <title>Upload form</title>
-
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/bootstrap.min.css">
 </head>
-<body>
+
+<style>
+  .red { background-color: #FFC5CB; }
+
+  [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+  }
+</style>
+
+<body class="ng-cloak">
 
 <div ng-controller="MyCtrl">
-  <input type="text" ng-model="myModelObj">
-  <input type="file" ng-file-select="onFileSelect($files)">
-  <input type="file" ng-file-select="onFileSelect($files)" multiple>
-
-  <div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class-name-or-function"
-       ng-show="dropSupported">drop files here
+  <div ng-file-drop="onFileSelect($files)"
+       ng-file-drag-over-class="'red'"
+       ng-show="dropSupported"
+       style="font-size: 40px; border: 2px dashed black; padding: 10px;">
+    Drop image here
   </div>
   <div ng-file-drop-available="dropSupported=true"
-       ng-show="!dropSupported">HTML5 Drop File is not supported!
+       ng-show="!dropSupported">
+    You're using an old browser.
   </div>
-  <button ng-click="upload.abort()">Cancel Upload</button>
+
+  <br/>
+
+  <div ng-if="uploadedImg">
+    <h3>Image dimensions:</h3>
+    <p>Width: {{uploadedImg.width || 'Not available'}}</p>
+    <p>Height: {{uploadedImg.height || 'Not available'}}</p>
+
+    <h3>Preview:</h3>
+    <img ng-src="{{uploadedImg.src}}">
+  </div>
 </div>
 
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -24,4 +42,7 @@
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="bower_components/ng-file-upload/angular-file-upload.min.js"></script>
 <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
+
+<script src="app.js"></script>
 </body>
+</html>
