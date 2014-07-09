@@ -13,6 +13,7 @@ angular.module('myApp', ['angularFileUpload'])
             $scope.uploadedImg = {
               width: img.width + 'px',
               height: img.height + 'px',
+              size: files[0].size + 'bytes',
               src: img.src
             }
           })

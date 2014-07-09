@@ -28,9 +28,10 @@
   <br/>
 
   <div ng-if="uploadedImg">
-    <h3>Image dimensions:</h3>
-    <p>Width: {{uploadedImg.width || 'Not available'}}</p>
-    <p>Height: {{uploadedImg.height || 'Not available'}}</p>
+    <h3>Image details:</h3>
+    <p>Width: {{uploadedImg.width}}</p>
+    <p>Height: {{uploadedImg.height}}</p>
+    <p>size: {{uploadedImg.size}}</p>
 
     <h3>Preview:</h3>
     <img ng-src="{{uploadedImg.src}}">
