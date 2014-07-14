@@ -12,38 +12,17 @@
 </style>
 
 <body class="ng-cloak">
+<div ui-view></div>
 
-<div ng-controller="MyCtrl">
-  <div ng-file-drop="onFileSelect($files)"
-       ng-file-drag-over-class="'red'"
-       ng-show="dropSupported"
-       style="font-size: 40px; border: 2px dashed black; padding: 10px;">
-    Drop image here
-  </div>
-  <div ng-file-drop-available="dropSupported=true"
-       ng-show="!dropSupported">
-    You're using an old browser.
-  </div>
-
-  <br/>
-
-  <div ng-if="uploadedImg">
-    <h3>Image details:</h3>
-    <p>Width: {{uploadedImg.width}}</p>
-    <p>Height: {{uploadedImg.height}}</p>
-    <p>size: {{uploadedImg.size}}</p>
-
-    <h3>Preview:</h3>
-    <img ng-src="{{uploadedImg.src}}">
-  </div>
-</div>
-
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.7.min.js"></script>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/lodash/dist/lodash.min.js"></script>
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="bower_components/ng-file-upload/angular-file-upload.min.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
-
+<script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

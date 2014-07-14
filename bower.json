@@ -24,6 +24,8 @@
     "jquery": "*",
     "bootstrap": "*",
     "ng-file-upload-shim": "*",
-    "ng-file-upload": "*"
+    "ng-file-upload": "*",
+    "angular-ui-router": "~0.2.10",
+    "angular-cookies": "~1.2.20"
   }
 }

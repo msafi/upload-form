@@ -1,0 +1,21 @@
+{
+  "name": "angular-oauth",
+  "dependencies": {
+    "angular": ">= 1.1.4"
+  },
+  "homepage": "https://github.com/enginous/angular-oauth",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/enginous/angular-oauth.git"
+  },
+  "_release": "9e39bbb3a7",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "9e39bbb3a7b94c11914ed2f0dc6c587ddf77aa2c"
+  },
+  "_source": "git://github.com/enginous/angular-oauth.git",
+  "_target": "*",
+  "_originalSource": "angular-oauth",
+  "_direct": true
+}
