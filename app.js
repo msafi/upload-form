@@ -26,7 +26,8 @@ angular.module('myApp', [
 )
 
 .controller('RootCtrl',
-  function($cookies, $state, $location) {
+  function($cookies, $state, $location, $http) {
+    var amazonQueryString = {}
     var params = {}
     var queryString = $location.hash()
     var regex = /([^&=]+)=([^&]*)/g
@@ -36,10 +37,26 @@ angular.module('myApp', [
       params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
     }
 
-    if (params.access_token) {
+    if (params.id_token) {
       // todo: Verify access token
-      $cookies.accessToken = params.access_token
+      $cookies.id_token = params.id_token
       $location.hash('')
+
+      // Authenticate with Amazon
+      $http({
+        method: 'GET',
+        params: {
+          DurationSeconds: 900,
+          Action: 'AssumeRoleWithWebIdentity',
+          Version: '2011-06-15',
+          RoleSessionName: 'upload-form',
+          RoleArn: 'arn:aws:iam::901881000271:role/upload-form',
+          WebIdentityToken: params.id_token
+        },
+        url: 'https://sts.amazonaws.com/'
+      }).success(function(response) {
+        console.log(response)
+      })
     }
 
     if ($cookies.accessToken) {
@@ -59,10 +76,10 @@ angular.module('myApp', [
           : 'http://msafi.github.io/upload-form/'
 
         var queryString = $.param({
-          response_type: 'token',
+          response_type: 'id_token',
           client_id: '404616317148-4j6lk78a2ltlkqbsv63o7v4ia5ntqgbg.apps.googleusercontent.com',
           redirect_uri: redirecUri,
-          scope: 'openid email'
+          scope: 'openid email profile'
         })
 
         return 'https://accounts.google.com/o/oauth2/auth?' + queryString
