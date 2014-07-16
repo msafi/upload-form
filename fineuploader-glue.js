@@ -4,7 +4,7 @@
  * and asks AWS for new credentials before those expire.
  */
 $(function() {
-    var bucketUrl = "https://upload-form.s3.amazonaws.com",
+    var bucketUrl = "https://gaming-soon-assets-upload.s3.amazonaws.com",
         updateCredentials = function(error, data) {
             if (!error) {
                 $('#uploader').fineUploaderS3("setCredentials", s3DemoGlobals.getFuCredentials(data));
@@ -36,10 +36,10 @@ $(function() {
         resume: {
             enabled: true
         },
-        // Restrict files to 15 MB and 5 net files per session
+        // Restrict files to 2000 MB and 10 net files per session
         validation: {
             itemLimit: 10,
-            sizeLimit: 500000000
+            sizeLimit: 2000000000
         },
         thumbnails: {
             placeholders: {
