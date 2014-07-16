@@ -8,7 +8,7 @@ angular.module('myApp', [
   function($stateProvider, $locationProvider) {
     $stateProvider
       .state('root', {
-        url: '/upload-form/',
+        url: '/upload-form/angular.html',
         controller: 'RootCtrl',
       })
       .state('uploadForm', {
@@ -26,40 +26,36 @@ angular.module('myApp', [
 )
 
 .controller('RootCtrl',
-  function($cookies, $state, $location, $http) {
-    var amazonQueryString = {}
-    var params = {}
-    var queryString = $location.hash()
-    var regex = /([^&=]+)=([^&]*)/g
-    var m
-
-    while (m = regex.exec(queryString)) {
-      params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
-    }
+  function($cookies, $state, $location, parseQueryString, $http) {
+    var params = parseQueryString($location.hash())
 
     if (params.id_token) {
-      // todo: Verify access token
-      $cookies.id_token = params.id_token
       $location.hash('')
 
       // Authenticate with Amazon
       $http({
         method: 'GET',
         params: {
-          DurationSeconds: 900,
-          Action: 'AssumeRoleWithWebIdentity',
+          DurationSeconds: '900',
           Version: '2011-06-15',
-          RoleSessionName: 'upload-form',
+          Action: 'AssumeRoleWithWebIdentity',
+          RoleSessionName: 'web-identity-federation',
           RoleArn: 'arn:aws:iam::901881000271:role/upload-form',
           WebIdentityToken: params.id_token
         },
         url: 'https://sts.amazonaws.com/'
-      }).success(function(response) {
-        console.log(response)
+      }).then(function(response) {
+        localStorage['credentials'] = JSON.stringify(
+          response
+            .data
+            .AssumeRoleWithWebIdentityResponse
+            .AssumeRoleWithWebIdentityResult
+            .Credentials
+        )
       })
     }
 
-    if ($cookies.accessToken) {
+    if ($cookies.asdf) {
       $state.go('uploadForm')
     } else {
       $state.go('requireLogin')
@@ -72,8 +68,8 @@ angular.module('myApp', [
     angular.extend($scope, {
       getAuthenticationUrl: function() {
         var redirecUri = ($location.host() === 'localhost')
-          ? 'http://localhost:63342/upload-form/'
-          : 'http://msafi.github.io/upload-form/'
+          ? 'http://localhost:63342/upload-form/angular.html'
+          : 'http://msafi.github.io/upload-form/angular.html'
 
         var queryString = $.param({
           response_type: 'id_token',
@@ -114,5 +110,21 @@ angular.module('myApp', [
         fileReader.readAsDataURL(files[0])
       }
     })
+  }
+)
+
+.service('parseQueryString',
+  function() {
+    return function(queryString) {
+      var params = {}
+      var regex = /([^&=]+)=([^&]*)/g
+      var m
+
+      while (m = regex.exec(queryString)) {
+        params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+      }
+
+      return params
+    }
   }
 )

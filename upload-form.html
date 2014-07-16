@@ -1,13 +1,7 @@
 <div ng-controller="UploadFormCtrl">
-  <div ng-file-drop="onFileSelect($files)"
-       ng-file-drag-over-class="'red'"
-       ng-show="dropSupported"
+  <div fine-uploader-s3
        style="font-size: 40px; border: 2px dashed black; padding: 10px;">
     Drop image here
-  </div>
-  <div ng-file-drop-available="dropSupported=true"
-       ng-show="!dropSupported">
-    You're using an old browser.
   </div>
 
   <br/>
