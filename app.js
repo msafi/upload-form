@@ -25,34 +25,79 @@ angular.module('myApp', [
   }
 )
 
+.service('amazonApi',
+  function($q) {
+    var s3
+    var credentials = $q.defer()
+
+    return {
+      authenticatedUser: credentials.promise,
+
+      authenticate: function(idToken) {
+        AWS.config.credentials = new AWS.WebIdentityCredentials({
+          RoleArn: 'arn:aws:iam::901881000271:role/uploader',
+          ProviderId: null, // this is null for Google
+          WebIdentityToken: idToken
+        })
+
+        credentials.resolve(AWS.config.credentials)
+
+        s3 = new AWS.S3({
+          endpoint: 'https://s3.amazonaws.com'
+        })
+      },
+
+      listObjects: function() {
+        var files = $q.defer()
+
+        this.authenticatedUser.then(function() {
+          s3.listObjects(
+            {
+              Bucket: 'upload-form',
+              Prefix: 'mksafi'
+            },
+
+            function(error, data) {
+              files.resolve({
+                error: error,
+                data: data
+              })
+            }
+          )
+        })
+
+        return files.promise
+      },
+
+      uploadFile: function() {
+        this.authenticatedUser.then(function() {
+          s3.putObject({
+            Bucket: 'upload-form',
+            Key: 'mksafi/stuff',
+            Body: 'stuffzzzz'
+          }, function(error, data) {
+            console.log(error, data)
+          })
+        })
+      }
+    }
+  }
+)
+
 .controller('RootCtrl',
-  function($cookies, $state, $location, parseQueryString, $http) {
+  function($cookies, $state, $location, parseQueryString, amazonApi) {
     var params = parseQueryString($location.hash())
 
     if (params.id_token) {
       $location.hash('')
 
-      // Authenticate with Amazon
-      $http({
-        method: 'GET',
-        params: {
-          DurationSeconds: '900',
-          Version: '2011-06-15',
-          Action: 'AssumeRoleWithWebIdentity',
-          RoleSessionName: 'web-identity-federation',
-          RoleArn: 'arn:aws:iam::901881000271:role/upload-form',
-          WebIdentityToken: params.id_token
-        },
-        url: 'https://sts.amazonaws.com/'
-      }).then(function(response) {
-        localStorage['credentials'] = JSON.stringify(
-          response
-            .data
-            .AssumeRoleWithWebIdentityResponse
-            .AssumeRoleWithWebIdentityResult
-            .Credentials
-        )
+      amazonApi.authenticate(params.id_token)
+
+      amazonApi.listObjects().then(function(response) {
+        console.log(response.data, response.error)
       })
+
+//      amazonApi.uploadFile()
     }
 
     if ($cookies.asdf) {
