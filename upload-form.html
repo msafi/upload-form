@@ -1,21 +1,43 @@
-<div ng-controller="UploadFormCtrl">
-  <div fine-uploader-s3
-       style="font-size: 40px; border: 2px dashed black; padding: 10px;">
-    Drop image here
+<div>
+  <p>You have been signed in. Welcome.</p>
+
+  <div>
+    <label for="userFullName">Name</label>
+    <input type="text" ng-model="user.name.display" id="userFullName">
   </div>
 
-  <br/>
+  <div>
+    <label for="userEmail">Email</label>
+    <input type="text" ng-model="user.email" id="userEmail">
+  </div>
 
-  <div ng-if="uploadedImg">
-    <h3>Image details:</h3>
+  <hr>
 
-    <p>Width: {{uploadedImg.width}}</p>
+  <div ng-if="user.files.length && user.files.length > 0">
+    <p>We currently have the following files from you:</p>
+    <ul>
+      <li ng-repeat="file in user.files track by $index">{{file}}</li>
+    </ul>
+  </div>
 
-    <p>Height: {{uploadedImg.height}}</p>
+  <div ng-if="user.files.length && user.files.length < 1">
+    <p>We do not have any files from you, yet.</p>
+  </div>
 
-    <p>size: {{uploadedImg.size}}</p>
+  <div ng-if="!user.files.length">
+    Contacting server...
+  </div>
 
-    <h3>Preview:</h3>
-    <img ng-src="{{uploadedImg.src}}">
+  <hr>
+
+  <style>
+    .red {
+      color: red;
+    }
+  </style>
+  <div ng-file-drop="onFileSelect($files)"
+       ng-file-drag-over-class="'red'"
+       style="font-size: 40px; border: 1px dashed black; padding: 10px;">
+    Drop files here
   </div>
 </div>

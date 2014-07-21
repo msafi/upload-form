@@ -13,7 +13,7 @@
   }
 </style>
 
-<body class="ng-cloak">
+<body class="ng-cloak" ng-controller="RootCtrl">
 <div ui-view></div>
 
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.7.min.js"></script>
@@ -25,5 +25,18 @@
 <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
 <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
 <script src="app.js"></script>
+<script src="services.js"></script>
+<script src="controllers.js"></script>
+
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script');
+    po.type = 'text/javascript';
+    po.async = true;
+    po.src = 'https://apis.google.com/js/client:plusone.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(po, s);
+  })();
+</script>
 </body>
 </html>
