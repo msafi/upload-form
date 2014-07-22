@@ -45,9 +45,22 @@ angular.module('myApp')
           Key: $scope.user.id + '/' + file.name,
           Body: file,
           ContentType: file.type
-        }).then(function() {
-          listObjects()
-        })
+        }).then(
+          function success() {
+            delete $scope.uploading
+
+            listObjects()
+          },
+
+          function error() {},
+
+          function notification(uploadProgress) {
+            var percentage = parseInt(uploadProgress.loaded / uploadProgress.total * 100)
+            percentage += '%'
+
+            $scope.uploading = { percentage: percentage }
+          }
+        )
 
         fileReader.readAsDataURL(files[0])
       }

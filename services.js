@@ -2,26 +2,32 @@ angular.module('myApp')
 
 .service('amazonApi',
   function($q, user) {
+    var amazonAuthenticated = false
     var bucketName = 'upload-form'
     var s3
 
     return {
       authenticate: function() {
-        if (user.isAuthenticated()) {
-          var credentials = $q.defer()
+        var credentials = $q.defer()
 
-          AWS.config.credentials = new AWS.WebIdentityCredentials({
-            RoleArn: 'arn:aws:iam::901881000271:role/uploader',
-            WebIdentityToken: user.get().idToken
-          })
+        if (user.isAuthenticated()) {
+          if (!amazonAuthenticated) {
+            AWS.config.credentials = new AWS.WebIdentityCredentials({
+              RoleArn: 'arn:aws:iam::901881000271:role/uploader',
+              WebIdentityToken: user.get().idToken
+            })
+
+            s3 = new AWS.S3({ params: { Bucket: bucketName } })
+            amazonAuthenticated = true
+          }
 
           credentials.resolve(AWS.config.credentials)
-          s3 = new AWS.S3({ params: { Bucket: bucketName } })
-
-          return credentials.promise
         } else {
+          credentials.reject({ errorMessage: 'User not authenticated.' })
           user.redirect()
         }
+
+        return credentials.promise
       },
 
       listObjects: function(options) {
@@ -47,11 +53,14 @@ angular.module('myApp')
           options.Bucket = bucketName
 
           s3.putObject(options)
-            .on('httpUploadProgress', function() {
-              console.log(arguments)
+            .on('httpUploadProgress', function(uploadProgress) {
+              fileUploadResponse.notify({
+                loaded: uploadProgress.loaded,
+                total: uploadProgress.total
+              })
             })
             .on('complete', function() {
-              console.log('completed!')
+              fileUploadResponse.resolve(true)
             })
             .send()
         })

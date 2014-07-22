@@ -28,6 +28,12 @@
     <p>Contacting server...</p>
   </div>
 
+  <hr ng-if="uploading">
+
+  <div ng-if="uploading">
+    <p>Upload percentage: {{uploading.percentage}}</p>
+  </div>
+
   <hr>
 
   <div ng-file-drop="onFileSelect($files)"
