@@ -1,12 +1,5 @@
 <p>Sign in to use this application:</p>
 
-<span id="signinButton">
-  <span
-    class="g-signin"
-    data-callback="googleSignInCb"
-    data-clientid="404616317148-4j6lk78a2ltlkqbsv63o7v4ia5ntqgbg.apps.googleusercontent.com"
-    data-cookiepolicy="single_host_origin"
-    data-approvalprompt="force"
-    data-scope="profile email">
-  </span>
-</span>
+<div google-signin
+     client-id='404616317148-4j6lk78a2ltlkqbsv63o7v4ia5ntqgbg'
+     after-signin="signedIn(oauth)"></div>

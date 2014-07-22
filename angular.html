@@ -1,4 +1,4 @@
-<html ng-app="myApp">
+<html>
 <head>
   <title>Upload form</title>
 </head>
@@ -27,13 +27,14 @@
 <script src="app.js"></script>
 <script src="services.js"></script>
 <script src="controllers.js"></script>
+<script src="directives.js"></script>
 
 <script type="text/javascript">
   (function() {
     var po = document.createElement('script');
     po.type = 'text/javascript';
     po.async = true;
-    po.src = 'https://apis.google.com/js/client:plusone.js';
+    po.src = 'https://apis.google.com/js/client:plusone.js?onload=onLoadCallback';
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(po, s);
   })();

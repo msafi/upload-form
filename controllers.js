@@ -1,25 +1,22 @@
 angular.module('myApp')
 
 .controller('RootCtrl',
-  function($state, googleApi) {
-    googleApi.authenticate({
-      success: function() {
-        $state.go('uploadForm')
-      },
-      failure: function() {
-        $state.go('requireLogin')
-      }
-    })
+  function(user) {
+    user.redirect()
   }
 )
 
 .controller('RequireLoginCtrl',
-  function($scope, $location) {
+  function($scope, user, $state) {
+    $scope.signedIn = function(oauth) {
+      user.setCredentials(oauth)
+      user.redirect()
+    }
   }
 )
 
 .controller('UploadFormCtrl',
-  function($scope, amazonApi, googleApi) {
+  function($scope, amazonApi, user) {
     angular.extend($scope, {
       user: {},
 
@@ -56,17 +53,15 @@ angular.module('myApp')
       }
     })
 
-    googleApi.getUserInfo().then(function(user) {
+    user.populateInfo().then(function(user) {
       $scope.user = user
-
-      amazonApi.authenticate(user.idToken)
       listObjects()
     })
 
     function listObjects() {
-      $scope.user.files = []
-      
       amazonApi.listObjects({ Prefix: $scope.user.id }).then(function(response) {
+        $scope.user.files = []
+
         _.each(response.data.Contents, function(file) {
           $scope.user.files.push(file.Key.replace($scope.user.id + '/', ''))
         })

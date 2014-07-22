@@ -20,21 +20,16 @@
     </ul>
   </div>
 
-  <div ng-if="user.files.length && user.files.length < 1">
+  <div ng-if="user.files.length !== undefined && user.files.length < 1">
     <p>We do not have any files from you, yet.</p>
   </div>
 
-  <div ng-if="!user.files.length">
-    Contacting server...
+  <div ng-if="user.files.length === undefined">
+    <p>Contacting server...</p>
   </div>
 
   <hr>
 
-  <style>
-    .red {
-      color: red;
-    }
-  </style>
   <div ng-file-drop="onFileSelect($files)"
        ng-file-drag-over-class="'red'"
        style="font-size: 40px; border: 1px dashed black; padding: 10px;">

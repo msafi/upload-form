@@ -1,109 +1,33 @@
 angular.module('myApp')
 
-.service('googleApi',
-  function($http, $q, $cookies) {
-    var user = {}
-    var googleResponse = $q.defer()
-
-    return {
-      authenticate: function(callbacks) {
-        if (!this.userIsAuthenticated()) {
-          callbacks.failure()
-        } else {
-          callbacks.success()
-        }
-
-        window.googleSignInCb = function(serverResponse) {
-          user.idToken = serverResponse.id_token
-          user.accessToken = serverResponse.access_token
-          setUser()
-          googleResponse.resolve(true)
-          callbacks.success()
-        }
-      },
-
-      userIsAuthenticated: function() {
-        var user = getUser()
-
-        return user && !!user.email
-      },
-
-      authenticated: googleResponse.promise,
-
-      getUserInfo: function() {
-        var deferredUser = $q.defer()
-
-        if (this.userIsAuthenticated()) {
-          deferredUser.resolve(getUser())
-        } else {
-          this.authenticated.then(function() {
-            $http({
-              method: 'GET',
-              params: {
-                access_token: user.accessToken
-              },
-              url: 'https://www.googleapis.com/plus/v1/people/me'
-            }).success(function(response) {
-              angular.extend(user, {
-                name: {
-                  display: response.displayName,
-                  familyName: response.name.familyName,
-                  givenName: response.name.givenName
-                },
-                domain: response.domain,
-                email: response.emails[0].value,
-                gender: response.gender,
-                id: response.id,
-                image: response.image.url,
-                googlePlusUrl: response.url
-              })
-
-              setUser()
-              deferredUser.resolve(user)
-            })
-          })
-        }
-
-        return deferredUser.promise
-      },
-    }
-
-    function setUser() {
-      localStorage['user'] = JSON.stringify(user)
-    }
-
-    function getUser() {
-      return localStorage['user'] && JSON.parse(localStorage['user'])
-    }
-  }
-)
-
 .service('amazonApi',
-  function($q, $timeout) {
+  function($q, user) {
     var bucketName = 'upload-form'
-    var credentials = $q.defer()
     var s3
 
     return {
-      authenticatedUser: credentials.promise,
+      authenticate: function() {
+        if (user.isAuthenticated()) {
+          var credentials = $q.defer()
 
-      authenticate: function(idToken) {
-        AWS.config.credentials = new AWS.WebIdentityCredentials({
-          RoleArn: 'arn:aws:iam::901881000271:role/uploader',
-          WebIdentityToken: idToken
-        })
+          AWS.config.credentials = new AWS.WebIdentityCredentials({
+            RoleArn: 'arn:aws:iam::901881000271:role/uploader',
+            WebIdentityToken: user.get().idToken
+          })
 
-        credentials.resolve(AWS.config.credentials)
-        s3 = new AWS.S3({
-          params: { Bucket: bucketName }
-        })
+          credentials.resolve(AWS.config.credentials)
+          s3 = new AWS.S3({ params: { Bucket: bucketName } })
+
+          return credentials.promise
+        } else {
+          user.redirect()
+        }
       },
 
       listObjects: function(options) {
         var files = $q.defer()
 
-        this.authenticatedUser.then(function() {
-
+        this.authenticate().then(function() {
           s3.listObjects(options, function(error, data) {
             files.resolve({
               error: error,
@@ -118,13 +42,18 @@ angular.module('myApp')
       uploadFile: function(options) {
         var fileUploadResponse = $q.defer()
 
-        this.authenticatedUser.then(function() {
+        this.authenticate().then(function() {
           options = options || {}
           options.Bucket = bucketName
 
-          s3.putObject(options, function(error, data) {
-            fileUploadResponse.resolve({ error: error, data: data })
-          })
+          s3.putObject(options)
+            .on('httpUploadProgress', function() {
+              console.log(arguments)
+            })
+            .on('complete', function() {
+              console.log('completed!')
+            })
+            .send()
         })
 
         return fileUploadResponse.promise
@@ -133,18 +62,62 @@ angular.module('myApp')
   }
 )
 
-.service('parseQueryString',
-  function() {
-    return function(queryString) {
-      var params = {}
-      var regex = /([^&=]+)=([^&]*)/g
-      var m
+.service('user',
+  function($state, $q) {
+    var user = {}
+    var credentials = {}
 
-      while (m = regex.exec(queryString)) {
-        params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+    return {
+      redirect: function() {
+        if (this.isAuthenticated()) {
+          $state.go('uploadForm')
+        } else {
+          $state.go('requireLogin')
+        }
+      },
+
+      isAuthenticated: function() {
+        var currentTime = parseInt(new Date().valueOf() / 1000)
+
+        return credentials && credentials.expires_at > currentTime
+      },
+
+      setCredentials: function(newCredentials) {
+        angular.extend(user, {
+          accessToken: newCredentials.access_token,
+          idToken: newCredentials.id_token
+        })
+
+        credentials = newCredentials
+      },
+
+      get: function() {
+        return user
+      },
+
+      populateInfo: function() {
+        var userInfo = $q.defer()
+
+        gapi.client.oauth2.userinfo.get().execute(function(freshUserInfo) {
+          angular.extend(user, {
+            name: {
+              display: freshUserInfo.name,
+              familyName: freshUserInfo.family_name,
+              givenName: freshUserInfo.given_name
+            },
+            domain: freshUserInfo.hd,
+            email: freshUserInfo.email,
+            gender: freshUserInfo.gender,
+            id: freshUserInfo.id,
+            image: freshUserInfo.picture,
+            googlePlusUrl: freshUserInfo.link
+          })
+
+          userInfo.resolve(user)
+        })
+
+        return userInfo.promise
       }
-
-      return params
     }
   }
 )
