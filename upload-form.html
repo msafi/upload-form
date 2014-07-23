@@ -1,44 +1,173 @@
-<div>
-  <p>You have been signed in. Welcome.</p>
-
+<h2>App Advice Asset Upload Form</h2>
+<form role="form">
   <div>
-    <label for="userFullName">Name</label>
-    <input type="text" ng-model="user.name.display" id="userFullName">
+    <div class="form-group basic-info">
+      <div class="form-group">
+        <label for="user-first-name">First name*</label>
+        <input class="form-control" type="text" ng-model="user.name.givenName" id="user-first-name" placeholder="John">
+      </div>
+
+      <div class="form-group">
+        <label for="user-last-name">Last name*</label>
+        <input class="form-control" type="text" ng-model="user.name.familyName" id="user-family-name"
+               placeholder="Appleseed">
+      </div>
+
+      <div class="form-group">
+        <label for="user-email">Email*</label>
+        <input class="form-control" type="text" ng-model="user.email" id="user-email"
+               placeholder="john.appleseed@icloud.com">
+      </div>
+
+      <div class="form-group">
+        <label for="user-twitter">Twitter</label>
+        <input class="form-control" type="text" ng-model="user.twitter" id="user-twitter" placeholder="@jappleseed">
+      </div>
+
+      <div class="form-group">
+        <label for="user-role">Your role</label>
+        <input class="form-control" type="text" ng-model="user.role" id="user-role" placeholder="The main man">
+      </div>
+
+      <div class="form-group">
+        <label for="user-phone">Phone number</label>
+        <input class="form-control" type="text" ng-model="user.phone" id="user-phone" placeholder="555-555-5555">
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="form-group publisher-info">
+      <p>Have you published to the App Store before?</p>
+      <div class="radio">
+        <label>
+          <input type="radio"
+                 name="has-published"
+                 id="has-published-yes"
+                 ng-value="true"
+                 ng-model="user.hasPublished">Yes
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio"
+                 name="has-published"
+                 id="has-published-no"
+                 ng-value="false"
+                 ng-model="user.hasPublished">No
+        </label>
+      </div>
+
+      <div ng-if="user.hasPublished">
+        <div class="form-group">
+          <label for="user-published-app-name">What's the name of the app that you've published?</label>
+          <input class="form-control sfTypeahead"
+                 type="text"
+                 options="twitterTypeaheadOptions"
+                 datasets="twitterTypeaheadData"
+                 ng-model="user.publishedApp"
+                 id="user-published-app-name">
+        </div>
+
+        <div ng-if="publishedAppIsFound(user.publishedApp)">
+          <div class="form-group">
+            <label for="user-artist-name">Artist name</label>
+            <input class="form-control" type="text" ng-model="user.publishedApp.artistName">
+          </div>
+
+          <div class="form-group">
+            <label for="user-artist-id">Artist ID</label>
+            <input class="form-control" type="text" ng-model="user.publishedApp.artistId">
+          </div>
+
+          <div class="form-group">
+            <label for="user-seller-url">App website</label>
+            <input class="form-control" type="text" ng-model="user.publishedApp.sellerUrl">
+          </div>
+
+          <div class="form-group">
+            <label for="user-published-app-twitter-handle">Twitter handle for this app</label>
+            <input class="form-control" type="text" ng-model="user.publishedAppTwitterHandle">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group new-game-info">
+      <p>Is your new game already in the App Store?</p>
+
+      <div class="radio">
+        <label>
+          <input type="radio"
+                 name="new-game-published"
+                 id="new-game-published-yes"
+                 ng-value="true"
+                 ng-model="user.newGameHasPublished">Yes
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio"
+                 name="new-game-published"
+                 id="new-game-published-no"
+                 ng-value="false"
+                 ng-model="user.newGameHasPublished">No
+        </label>
+      </div>
+
+      <div ng-if="user.newGameHasPublished">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="user-new-game-name">What's the name of your new game?</label>
+            <input class="form-control sfTypeahead"
+                   type="text"
+                   options="twitterTypeaheadOptions"
+                   datasets="twitterTypeaheadData"
+                   ng-model="user.newGame"
+                   id="user-new-game-name">
+          </div>
+
+          <div ng-if="publishedAppIsFound(user.newGame)">
+            <div class="form-group">
+              <label for="user-new-game-app-id">Game app ID</label>
+              <input class="form-control" type="text" ng-model="user.newGame.trackId" id="user-new-game-app-id">
+            </div>
+
+            <div class="form-group">
+              <label for="user-new-game-website">Game website</label>
+              <input class="form-control" type="text" ng-model="user.newGame.sellerUrl" id="user-new-game-website">
+            </div>
+
+            <div class="form-group">
+              <label for="user-new-game-release-date">Release date</label>
+              <input class="form-control" type="date" ng-model="user.newGame.trackId" id="user-new-game-release-date">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!--<div ng-if="user.files.length !== undefined && user.files.length < 1">
+      <p>We do not have any files from you, yet.</p>
+    </div>
+
+    <div ng-if="user.files.length === undefined">
+      <p>Contacting server...</p>
+    </div>
+
+    <hr ng-if="uploading">
+
+    <div ng-if="uploading">
+      <p>Upload percentage: {{uploading.percentage}}</p>
+    </div>-->
+
+    <hr>
+
+    <div ng-file-drop="onFileSelect($files)"
+         ng-file-drag-over-class="'red'"
+         style="font-size: 40px; border: 1px dashed black; padding: 10px;">
+      Drop files here
+    </div>
   </div>
-
-  <div>
-    <label for="userEmail">Email</label>
-    <input type="text" ng-model="user.email" id="userEmail">
-  </div>
-
-  <hr>
-
-  <div ng-if="user.files.length && user.files.length > 0">
-    <p>We currently have the following files from you:</p>
-    <ul>
-      <li ng-repeat="file in user.files track by $index">{{file}}</li>
-    </ul>
-  </div>
-
-  <div ng-if="user.files.length !== undefined && user.files.length < 1">
-    <p>We do not have any files from you, yet.</p>
-  </div>
-
-  <div ng-if="user.files.length === undefined">
-    <p>Contacting server...</p>
-  </div>
-
-  <hr ng-if="uploading">
-
-  <div ng-if="uploading">
-    <p>Upload percentage: {{uploading.percentage}}</p>
-  </div>
-
-  <hr>
-
-  <div ng-file-drop="onFileSelect($files)"
-       ng-file-drag-over-class="'red'"
-       style="font-size: 40px; border: 1px dashed black; padding: 10px;">
-    Drop files here
-  </div>
-</div>
+</form>

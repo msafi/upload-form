@@ -1,6 +1,9 @@
 <html>
 <head>
   <title>Upload form</title>
+
+  <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="typeaheadjs.css" rel="stylesheet">
 </head>
 
 <style>
@@ -13,13 +16,15 @@
   }
 </style>
 
-<body class="ng-cloak" ng-controller="RootCtrl">
+<body class="ng-cloak container-fluid" ng-controller="RootCtrl">
 <div ui-view></div>
 
-<script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.7.min.js"></script>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/typeahead.js/dist/typeahead.bundle.min.js"></script>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.7.min.js"></script>
 <script src="bower_components/lodash/dist/lodash.min.js"></script>
 <script src="bower_components/angular/angular.min.js"></script>
+<script src="bower_components/angular-typeahead/angular-typeahead.min.js"></script>
 <script src="bower_components/ng-file-upload/angular-file-upload.min.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asset Form Fields</title>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container" style="margin-top:15px;">
+  <h2 style="text-align:center;">Login</h2>
+  <hr>
+  <div style="text-align:center">
+    <button type="button" class="btn btn-primary">LOGIN</button>
+  </div>
+  <h2 style="text-align:center;">Uploader Info</h2>
+  <hr>
+  <form class="form-horizontal" role="form">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">First Name</label>
+
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="your first name (should be auto populated from auth)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Last Name</label>
+
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="your last name (should be auto populated from auth)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Email</label>
+
+      <div class="col-sm-10">
+        <input type="email" class="form-control" id="inputEmail3" placeholder="(should be auto populated from auth)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Personal Twitter</label>
+
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="@whoiam (*optional)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Your Role</label>
+
+      <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="The man (*optional)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Phone Number</label>
+
+      <div class="col-sm-10">
+        <input type="tel" class="form-control" placeholder="555-555-5555 (*optional)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">TimeZone</label>
+
+      <div class="col-sm-10">
+        <select class="form-control">
+          <option value="">GMT-8 (should be set from browser read values)</option>
+        </select>
+      </div>
+    </div>
+  </form>
+
+  <h2 style="text-align:center;">Developer/Publisher Info</h2>
+  <hr>
+  <form class="form-horizontal" role="form">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Do you have an app in the app store</label>
+
+      <div class="col-sm-10">
+        <select class="form-control">
+          <option value="">YES</option>
+          <option value="">NO</option>
+        </select>
+      </div>
+      <h4 style="text-align:center;">** if yes **</h4>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">App Name</label>
+
+        <div class="col-sm-10">
+          <input type="text" class="form-control"
+                 placeholder="input would search app store for this app and poplate developer info">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Name</label>
+
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="Acme (may be populated from itunes)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Artist id </label>
+
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="hidden field populated from itunes search">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Website</label>
+
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder=" (may be populated from itunes)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Twitter</label>
+
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="@company">
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <h2 style="text-align:center;">App Info</h2>
+  <hr>
+  <form class="form-horizontal" role="form">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Is the app live in the app store</label>
+
+      <div class="col-sm-10">
+        <select class="form-control">
+          <option value="">YES</option>
+          <option value="">NO</option>
+        </select>
+      </div>
+      <h4 style="text-align:center;">** if yes **</h4>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">App Name</label>
+
+        <div class="col-sm-10">
+          <input type="text" class="form-control"
+                 placeholder="input would search app store for this app and poplate app info">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">App id </label>
+
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="hidden field populated from itunes search">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Game Genre</label>
+
+        <div class="col-sm-10">
+          <select class="form-control">
+            <option value="">Category Select</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Website for app</label>
+
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Release Date</label>
+
+        <div class="col-sm-10">
+          <input type="date" class="form-control">
+        </div>
+      </div>
+    </div>
+  </form>
+  <h2 style="text-align:center;">Image Assets</h2>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">One Sheet Poster</label>
+
+    <div class="col-sm-10">
+      <input type="file" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Half Sheet Poster</label>
+
+    <div class="col-sm-10">
+      <input type="file" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Background Poster</label>
+
+    <div class="col-sm-10">
+      <input type="file" class="form-control">
+    </div>
+  </div>
+  <hr>
+  <h2 style="text-align:center;">Video Assets</h2>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Video Trailer</label>
+
+    <div class="col-sm-10">
+      <input type="file" class="form-control">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Type</label>
+
+    <div class="col-sm-10">
+      <select class="form-control">
+        <option value="">Trailer</option>
+        <option value="">Teaser</option>
+      </select>
+    </div>
+  </div>
+  <hr>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+</body>
+</html>

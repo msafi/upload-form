@@ -17,8 +17,25 @@ angular.module('myApp')
 
 .controller('UploadFormCtrl',
   function($scope, amazonApi, user) {
+    var url = 'https://itunes.apple.com/search?media=software&limit=10&term=%QUERY';
+    var appSuggestions = new Bloodhound({
+      datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.trackName) },
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: { url: url, ajax: { type: 'GET', dataType: 'jsonp' }, filter: function(data) { return data.results } },
+    })
+
+    appSuggestions.initialize()
+
     angular.extend($scope, {
       user: {},
+
+      twitterTypeaheadOptions: { highlight: true },
+
+      twitterTypeaheadData: { displayKey: 'trackName', source: appSuggestions.ttAdapter() },
+
+      publishedAppIsFound: function(publishedApp) {
+        return angular.isObject(publishedApp)
+      },
 
       onFileSelect: function(files) {
         var file = files[0]
@@ -68,12 +85,15 @@ angular.module('myApp')
 
     user.populateInfo().then(function(user) {
       $scope.user = user
+
       listObjects()
     })
 
     function listObjects() {
       amazonApi.listObjects({ Prefix: $scope.user.id }).then(function(response) {
         $scope.user.files = []
+
+        if (!response.data) { return }
 
         _.each(response.data.Contents, function(file) {
           $scope.user.files.push(file.Key.replace($scope.user.id + '/', ''))

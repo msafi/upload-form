@@ -78,6 +78,8 @@ angular.module('myApp')
 
     return {
       redirect: function() {
+        $state.go('uploadForm'); return;
+
         if (this.isAuthenticated()) {
           $state.go('uploadForm')
         } else {

@@ -12,9 +12,11 @@ angular.module('myApp')
       link: function(scope, ele, attrs) {
         // Set standard google class
         attrs.$set('class', 'g-signin');
+
         // Set the clientid
         attrs.$set('data-clientid',
             attrs.clientId + '.apps.googleusercontent.com');
+
         // build scope urls
         var scopes = attrs.scopes || [
           'auth/plus.profile.emails.read'
@@ -30,7 +32,6 @@ angular.module('myApp')
         window[callbackId] = function() {
           var oauth = arguments[0];
           directiveScope.afterSignin({oauth: oauth});
-          window[callbackId] = null;
         };
 
         // Set standard google signin button settings

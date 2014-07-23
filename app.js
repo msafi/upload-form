@@ -13,7 +13,7 @@ window.onLoadCallback = function() {
 angular.module('myApp', [
   'angularFileUpload',
   'ui.router',
-  'ngCookies'
+  'siyfion.sfTypeahead',
 ])
 
 .config(

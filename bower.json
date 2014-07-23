@@ -26,6 +26,10 @@
     "ng-file-upload-shim": "*",
     "ng-file-upload": "*",
     "angular-ui-router": "~0.2.10",
-    "angular-cookies": "~1.2.20"
+    "angular-cookies": "~1.2.20",
+    "angular-typeahead": "~0.2.0"
+  },
+  "resolutions": {
+    "jquery": "2.1.1"
   }
 }
