@@ -33,6 +33,10 @@ angular.module('myApp')
 
       twitterTypeaheadData: { displayKey: 'trackName', source: appSuggestions.ttAdapter() },
 
+      sendNotification: function() {
+        amazonApi.sendNotification()
+      },
+
       publishedAppIsFound: function(publishedApp) {
         return angular.isObject(publishedApp)
       },

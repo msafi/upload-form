@@ -4,7 +4,10 @@ angular.module('myApp')
   function($q, user) {
     var amazonAuthenticated = false
     var bucketName = 'upload-form'
+    var roleArn = 'arn:aws:iam::901881000271:role/uploader'
+    var topicArn = 'arn:aws:sns:eu-west-1:901881000271:upload-form'
     var s3
+    var sns
 
     return {
       authenticate: function() {
@@ -13,17 +16,20 @@ angular.module('myApp')
         if (user.isAuthenticated()) {
           if (!amazonAuthenticated) {
             AWS.config.credentials = new AWS.WebIdentityCredentials({
-              RoleArn: 'arn:aws:iam::901881000271:role/uploader',
+              RoleArn: roleArn,
               WebIdentityToken: user.get().idToken
             })
 
             s3 = new AWS.S3({ params: { Bucket: bucketName } })
+            sns = new AWS.SNS({ region: 'eu-west-1' })
             amazonAuthenticated = true
           }
 
           credentials.resolve(AWS.config.credentials)
         } else {
           credentials.reject({ errorMessage: 'User not authenticated.' })
+          amazonAuthenticated = false
+          
           user.redirect()
         }
 
@@ -66,6 +72,26 @@ angular.module('myApp')
         })
 
         return fileUploadResponse.promise
+      },
+
+      sendNotification: function() {
+        var messageStatus = $q.defer()
+
+        this.authenticate().then(function() {
+          sns.publish({
+            TopicArn: topicArn,
+            Message: 'Hi Andy,\n\nThis is the message.\n\nThis is a new line in the same message.\n\nKtnxbai,\n\n-MK',
+            Subject: 'New files uploaded from a game developer'
+          }, function(error, data) {
+            if (error !== null) {
+              messageStatus.reject()
+            } else {
+              messageStatus.resolve()
+            }
+          })
+        })
+
+        return messageStatus.promise
       }
     }
   }
@@ -78,8 +104,6 @@ angular.module('myApp')
 
     return {
       redirect: function() {
-        $state.go('uploadForm'); return;
-
         if (this.isAuthenticated()) {
           $state.go('uploadForm')
         } else {
