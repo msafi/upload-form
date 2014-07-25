@@ -29,7 +29,7 @@ angular.module('myApp')
         } else {
           credentials.reject({ errorMessage: 'User not authenticated.' })
           amazonAuthenticated = false
-          
+
           user.redirect()
         }
 
@@ -104,6 +104,9 @@ angular.module('myApp')
 
     return {
       redirect: function() {
+        $state.go('uploadForm')
+        return
+
         if (this.isAuthenticated()) {
           $state.go('uploadForm')
         } else {

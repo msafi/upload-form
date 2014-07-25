@@ -17,21 +17,44 @@ angular.module('myApp')
 
 .controller('UploadFormCtrl',
   function($scope, amazonApi, user) {
-    var url = 'https://itunes.apple.com/search?media=software&limit=10&term=%QUERY';
-    var appSuggestions = new Bloodhound({
-      datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.trackName) },
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      remote: { url: url, ajax: { type: 'GET', dataType: 'jsonp' }, filter: function(data) { return data.results } },
-    })
-
-    appSuggestions.initialize()
+    // @todo: get timezone offset
+    // @todo: get artistId
+    // @todo: get appId
 
     angular.extend($scope, {
       user: {},
 
       twitterTypeaheadOptions: { highlight: true },
 
-      twitterTypeaheadData: { displayKey: 'trackName', source: appSuggestions.ttAdapter() },
+      twitterTypeaheadData: { displayKey: 'trackName' },
+
+      initializeAppSuggestions: function() {
+        var urlBase = 'https://itunes.apple.com/search?media=software&limit=5&term=%QUERY';
+        var hasPublished = ($scope.user && (this.user.hasPublishedGame || this.user.hasPublishedApp)) || '1'
+        var entityDictionary = { 1: 'software', 2: 'iPadSoftware' }
+        var country = ($scope.user && $scope.user.publishedAppRegion) || 'US'
+        var url = [urlBase, 'entity=' + entityDictionary[hasPublished], 'country=' + country].join('&')
+        var appSuggestions = {}
+
+        appSuggestions = new Bloodhound({
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.trackName) },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          remote: {
+            url: url,
+            ajax: {
+              type: 'GET',
+              dataType: 'jsonp',
+              beforeSend: function(_) { $scope.$apply(function() { $scope.contactingItunes = true }); return _ },
+              complete: function() { $scope.$apply(function() { $scope.contactingItunes = false }) },
+            },
+            filter: function(data) { return data.results },
+            rateLimitWait: 30,
+          },
+        })
+
+        appSuggestions.initialize()
+        this.twitterTypeaheadData.source = appSuggestions.ttAdapter()
+      },
 
       sendNotification: function() {
         amazonApi.sendNotification()
