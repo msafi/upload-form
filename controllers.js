@@ -26,34 +26,57 @@ angular.module('myApp')
 
       twitterTypeaheadOptions: { highlight: true },
 
-      twitterTypeaheadData: { displayKey: 'trackName' },
+      twitterTypeaheadData: [],
 
       initializeAppSuggestions: function() {
-        var urlBase = 'https://itunes.apple.com/search?media=software&limit=5&term=%QUERY';
-        var hasPublished = ($scope.user && (this.user.hasPublishedGame || this.user.hasPublishedApp)) || '1'
-        var entityDictionary = { 1: 'software', 2: 'iPadSoftware' }
-        var country = ($scope.user && $scope.user.publishedAppRegion) || 'US'
-        var url = [urlBase, 'entity=' + entityDictionary[hasPublished], 'country=' + country].join('&')
-        var appSuggestions = {}
+        var urlBase = 'https://itunes.apple.com/search?media=software&limit=5'
+        var iphoneAppSuggestions = {}
+        var ipadAppSuggestions = {}
+        var generateBloodhoundOptions = function(device) {
+          var deviceDictionary = {
+            iphone: 'software',
+            ipad: 'iPadSoftware'
+          }
 
-        appSuggestions = new Bloodhound({
-          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.trackName) },
-          queryTokenizer: Bloodhound.tokenizers.whitespace,
-          remote: {
-            url: url,
-            ajax: {
-              type: 'GET',
-              dataType: 'jsonp',
-              beforeSend: function(_) { $scope.$apply(function() { $scope.contactingItunes = true }); return _ },
-              complete: function() { $scope.$apply(function() { $scope.contactingItunes = false }) },
+          return {
+            datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.trackName) },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+              url: urlBase,
+              replace: function(url, query) {
+                var country = ($scope.user && $scope.user.publishedAppRegion) || 'US'
+                var term = query
+                var url = [
+                  urlBase,
+                  'entity=' + deviceDictionary[device],
+                  'country=' + country,
+                  'term=' + encodeURIComponent(term)
+                ].join('&')
+
+                return url
+              },
+              ajax: {
+                type: 'GET',
+                dataType: 'jsonp',
+                beforeSend: function(xhr) { $scope.$apply(function() { $scope.contactingItunes = true }); return xhr },
+                complete: function() { $scope.$apply(function() { $scope.contactingItunes = false }) },
+              },
+              filter: function(data) { return data.results },
+              rateLimitWait: 30,
             },
-            filter: function(data) { return data.results },
-            rateLimitWait: 30,
-          },
-        })
+          }
+        }
 
-        appSuggestions.initialize()
-        this.twitterTypeaheadData.source = appSuggestions.ttAdapter()
+        iphoneAppSuggestions = new Bloodhound(generateBloodhoundOptions('iphone'))
+        iphoneAppSuggestions.initialize()
+
+        ipadAppSuggestions = new Bloodhound(generateBloodhoundOptions('ipad'))
+        ipadAppSuggestions.initialize()
+
+        this.twitterTypeaheadData.push(
+          { name: 'iphone', displayKey: 'trackName', source: iphoneAppSuggestions.ttAdapter() },
+          { name: 'ipad', displayKey: 'trackName', source: ipadAppSuggestions.ttAdapter() }
+        )
       },
 
       sendNotification: function() {
