@@ -16,7 +16,7 @@ angular.module('myApp')
 )
 
 .controller('UploadFormCtrl',
-  function($scope, amazonApi, user) {
+  function($scope, amazonApi, user, filesValidator) {
     // @todo: get timezone offset
     // @todo: get artistId
     // @todo: get appId
@@ -27,6 +27,10 @@ angular.module('myApp')
       twitterTypeaheadOptions: { highlight: true },
 
       twitterTypeaheadData: [],
+
+      findType: function(fileType) {
+        return _.where(filesValidator.files, { type: fileType })
+      },
 
       initializeAppSuggestions: function() {
         var urlBase = 'https://itunes.apple.com/search?media=software&limit=5'
@@ -73,7 +77,8 @@ angular.module('myApp')
         ipadAppSuggestions = new Bloodhound(generateBloodhoundOptions('ipad'))
         ipadAppSuggestions.initialize()
 
-        this.twitterTypeaheadData.push(
+        $scope.twitterTypeaheadData = []
+        $scope.twitterTypeaheadData.push(
           { name: 'iphone', displayKey: 'trackName', source: iphoneAppSuggestions.ttAdapter() },
           { name: 'ipad', displayKey: 'trackName', source: ipadAppSuggestions.ttAdapter() }
         )
@@ -88,50 +93,32 @@ angular.module('myApp')
       },
 
       onFileSelect: function(files) {
-        var file = files[0]
-        var fileReader = new FileReader
+        filesValidator.add(files)
 
-        fileReader.onload = function() {
-          var img = new Image
-
-          img.onload = function() {
-            $scope.$apply(function() {
-              $scope.uploadedImg = {
-                width: img.width + 'px',
-                height: img.height + 'px',
-                size: files[0].size + 'bytes',
-                src: img.src
-              }
-            })
-          }
-
-          img.src = fileReader.result
-        }
-
-        amazonApi.uploadFile({
-          Key: $scope.user.id + '/' + file.name,
-          Body: file,
-          ContentType: file.type
-        }).then(
-          function success() {
-            delete $scope.uploading
-
-            listObjects()
-          },
-
-          function error() {},
-
-          function notification(uploadProgress) {
-            var percentage = parseInt(uploadProgress.loaded / uploadProgress.total * 100)
-            percentage += '%'
-
-            $scope.uploading = { percentage: percentage }
-          }
-        )
-
-        fileReader.readAsDataURL(files[0])
+//        amazonApi.uploadFile({
+//          Key: $scope.user.id + '/' + file.name,
+//          Body: file,
+//          ContentType: file.type
+//        }).then(
+//          function success() {
+//            delete $scope.uploading
+//
+//            listObjects()
+//          },
+//
+//          function error() {},
+//
+//          function notification(uploadProgress) {
+//            var percentage = parseInt(uploadProgress.loaded / uploadProgress.total * 100)
+//            percentage += '%'
+//
+//            $scope.uploading = { percentage: percentage }
+//          }
+//        )
       }
     })
+
+    $scope.requiredTypes = filesValidator.requiredTypes
 
     user.populateInfo().then(function(user) {
       $scope.user = user

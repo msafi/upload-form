@@ -336,7 +336,7 @@
         </div>
 
         <div class="form-group" ng-if="user.publishedAppRegion">
-          <label for="user-published-app-name">What's its name?</label>
+          <label for="user-published-app-name">Find it on the App Store:</label>
           <input class="form-control sfTypeahead"
                  type="text"
                  options="twitterTypeaheadOptions"
@@ -391,47 +391,67 @@
 
       <ul>
         <li>
-          <p>Video (highest quality available) <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{requiredTypes.video}}] Video (highest quality available) <button class="glyphicon glyphicon-info-sign"></button></p>
+          <ul>
+            <li ng-repeat="fileObject in findType('video')">{{fileObject.file.name}}</li>
+          </ul>
         </li>
         <li>
-          <p>One-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{requiredTypes.oneSheet}}] One-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
+          <ul>
+            <li ng-repeat="fileObject in findType('oneSheet')">{{fileObject.file.name}}</li>
+          </ul>
         </li>
         <li>
-          <p>Half-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{requiredTypes.halfSheet}}] Half-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
+          <ul>
+            <li ng-repeat="fileObject in findType('halfSheet')">{{fileObject.file.name}}</li>
+          </ul>
         </li>
         <li>
-          <p>Background sheet <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{requiredTypes.descriptionDocument}}] Game description document <button class="glyphicon glyphicon-info-sign"></button></p>
+          <ul>
+            <li ng-repeat="fileObject in findType('descriptionDocument')">{{fileObject.file.name}}</li>
+          </ul>
         </li>
         <li>
-          <p>Game description document <button class="glyphicon glyphicon-info-sign"></button></p>
-        </li>
-        <li>
-          <p>Any other files or assets you have for your game <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('other').length > 0}}] Any other files or assets you have for your game <button class="glyphicon glyphicon-info-sign"></button></p>
+          <ul>
+            <li ng-repeat="fileObject in findType('other')">{{fileObject.file.name}}</li>
+          </ul>
         </li>
       </ul>
 
-      <!--<div ng-file-drop="onFileSelect($files)"
-           ng-file-drag-over-class="'red'"
-           style="font-size: 40px; border: 1px dashed black; padding: 10px;">
-        Drop your files here...
-      </div>-->
+      <style>
+        .upload-button {
+          position: absolute;
+          top: 0px;
+          bottom: 0px;
+          left: 0px;
+          right: 0px;
+          width: 100%;
+          opacity: 0;
+        }
 
-      <div ng-file-select="onFileSelect($files)"
+        .upload-container {
+          position: relative;
+          font-size: 20px;
+          border: 1px dashed black;
+          padding: 10px;
+        }
+      </style>
+
+      <div class="upload-container"
            ng-file-drop="onFileSelect($files)"
            ng-file-drag-over-class="'red'"
-           data-multiple="true" title="select file"
-           onclick="this.value = null"
-           class="upload-button"
-           style="position: relative; font-size: 20px; border: 1px dashed black; padding: 10px;">
+           data-multiple="true">
         Click to add files or drag and drop files
         <input type="file"
                ng-file-select="onFileSelect($files)"
                data-multiple="true"
                title="select file"
-               onclick="this.value = null"
                class="upload-button"
-               multiple="multiple"
-               style="top: 0px; bottom: 0px; left: 0px; right: 0px; width: 100%; opacity: 0; position: absolute;">
+               multiple="multiple">
       </div>
 
       <hr>

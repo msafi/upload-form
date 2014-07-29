@@ -159,3 +159,124 @@ angular.module('myApp')
     }
   }
 )
+
+.service('filesValidator',
+  function($q) {
+    var files = []
+
+    return {
+      files: files,
+
+      requiredTypes: {
+        video: false,
+        halfSheet: false,
+        oneSheet: false,
+        descriptionDocument: false
+      },
+
+      add: function(newFiles) {
+        var self = this
+
+        _.each(newFiles, function(newFile) {
+          validateDescriptionDocument(newFile).then(function() {
+            self.requiredTypes.descriptionDocument = true
+            files.push({ file: newFile, type: 'descriptionDocument' })
+          }, function() {
+            validateVideo(newFile).then(function() {
+              self.requiredTypes.video = true
+              files.push({ file: newFile, type: 'video' })
+            }, function() {
+              validateImageFile(newFile, [3840, 2160]).then(function() { // Halfsheet specs
+                self.requiredTypes.halfSheet = true
+                files.push({ file: newFile, type: 'halfSheet' })
+              }, function() {
+                validateImageFile(newFile, [3072, 4608]).then(function() { // Onesheet specs
+                  self.requiredTypes.oneSheet = true
+                  files.push({ file: newFile, type: 'oneSheet' })
+                }, function() {
+                  files.push({ file: newFile, type: 'other' }) // Other
+                })
+              })
+            })
+          })
+        })
+      },
+    }
+
+    function validateDescriptionDocument(file) {
+      var validateDescriptionDocument = $q.defer()
+
+      if (_.any([
+        'application/pdf',
+        'text/plain',
+        'text/rtf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/x-iwork-pages-sffpages'
+      ], function(mimeType) {
+        return file.type === mimeType
+      })) {
+        validateDescriptionDocument.resolve()
+      } else {
+        validateDescriptionDocument.reject()
+      }
+
+      return validateDescriptionDocument.promise
+    }
+
+    function validateVideo(file) {
+      var validateVideo = $q.defer()
+
+      if (_.any([
+        'video/avi',
+        'video/mpeg',
+        'video/mp4',
+        'video/ogg',
+        'video/quicktime',
+        'video/webm'
+      ], function(mimeType) {
+        return file.type === mimeType
+      })) {
+        validateVideo.resolve()
+      } else {
+        validateVideo.reject()
+      }
+
+      return validateVideo.promise
+    }
+
+    function validateImageFile(file, dimensions) {
+      var validateImageFile = $q.defer()
+      var fileReader = new FileReader
+
+      if (_.any([
+        'image/gif',
+        'image/jpeg',
+        'image/pjpeg',
+        'image/png',
+      ], function(mimeType) {
+        return file.type === mimeType
+      })) {
+        fileReader.onload = function() {
+          var img = new Image
+
+          img.onload = function() {
+            if (img.width === dimensions[0] && img.height === dimensions[1]) {
+              validateImageFile.resolve()
+            } else {
+              validateImageFile.reject()
+            }
+          }
+
+          img.src = fileReader.result
+        }
+
+        fileReader.readAsDataURL(file)
+      } else {
+        validateImageFile.reject()
+      }
+
+      return validateImageFile.promise
+    }
+  }
+)
