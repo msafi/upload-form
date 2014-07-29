@@ -178,11 +178,11 @@ angular.module('myApp')
         var self = this
 
         _.each(newFiles, function(newFile) {
-          validateDescriptionDocument(newFile).then(function() {
+          validateExtension(['pdf', 'txt', 'doc', 'docx'], newFile).then(function() { // game description
             self.requiredTypes.descriptionDocument = true
             files.push({ file: newFile, type: 'descriptionDocument' })
           }, function() {
-            validateVideo(newFile).then(function() {
+            validateExtension(['avi', 'mpeg', 'mov', 'mp4', 'ogg', 'm4v', 'webm'], newFile).then(function() { // video
               self.requiredTypes.video = true
               files.push({ file: newFile, type: 'video' })
             }, function() {
@@ -203,59 +203,26 @@ angular.module('myApp')
       },
     }
 
-    function validateDescriptionDocument(file) {
-      var validateDescriptionDocument = $q.defer()
+    function validateExtension(extensions, file) {
+      var validateExtensions = $q.defer()
 
-      if (_.any([
-        'application/pdf',
-        'text/plain',
-        'text/rtf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/x-iwork-pages-sffpages'
-      ], function(mimeType) {
-        return file.type === mimeType
+      if (_.any(extensions, function(extension) {
+        return file.name.substr(-3) === extension
       })) {
-        validateDescriptionDocument.resolve()
+        validateExtensions.resolve()
       } else {
-        validateDescriptionDocument.reject()
+        validateExtensions.reject()
       }
 
-      return validateDescriptionDocument.promise
-    }
-
-    function validateVideo(file) {
-      var validateVideo = $q.defer()
-
-      if (_.any([
-        'video/avi',
-        'video/mpeg',
-        'video/mp4',
-        'video/ogg',
-        'video/quicktime',
-        'video/webm'
-      ], function(mimeType) {
-        return file.type === mimeType
-      })) {
-        validateVideo.resolve()
-      } else {
-        validateVideo.reject()
-      }
-
-      return validateVideo.promise
+      return validateExtensions.promise
     }
 
     function validateImageFile(file, dimensions) {
       var validateImageFile = $q.defer()
       var fileReader = new FileReader
 
-      if (_.any([
-        'image/gif',
-        'image/jpeg',
-        'image/pjpeg',
-        'image/png',
-      ], function(mimeType) {
-        return file.type === mimeType
+      if (_.any(['gif', 'jpeg', 'png'], function(extension) {
+        return file.name.substr(-3) === extension
       })) {
         fileReader.onload = function() {
           var img = new Image
