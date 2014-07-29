@@ -391,25 +391,25 @@
 
       <ul>
         <li>
-          <p>[Added: {{requiredTypes.video}}] Video (highest quality available) <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('video').length > 0}}] Video (highest quality available) <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
             <li ng-repeat="fileObject in findType('video')">{{fileObject.file.name}}</li>
           </ul>
         </li>
         <li>
-          <p>[Added: {{requiredTypes.oneSheet}}] One-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('oneSheet').length > 0}}] One-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
             <li ng-repeat="fileObject in findType('oneSheet')">{{fileObject.file.name}}</li>
           </ul>
         </li>
         <li>
-          <p>[Added: {{requiredTypes.halfSheet}}] Half-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('halfSheet').length > 0}}] Half-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
             <li ng-repeat="fileObject in findType('halfSheet')">{{fileObject.file.name}}</li>
           </ul>
         </li>
         <li>
-          <p>[Added: {{requiredTypes.descriptionDocument}}] Game description document <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('descriptionDocument').length > 0}}] Game description document <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
             <li ng-repeat="fileObject in findType('descriptionDocument')">{{fileObject.file.name}}</li>
           </ul>

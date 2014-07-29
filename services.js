@@ -163,35 +163,27 @@ angular.module('myApp')
 .service('filesValidator',
   function($q) {
     var files = []
+    var supportedTypes = {
+      descriptionDocument: ['pdf', 'txt', 'doc', 'docx'],
+      image: ['gif', 'jpeg', 'png'],
+      video: ['avi', 'mpeg', 'mov', 'mp4', 'ogg', 'm4v', 'webm'],
+    }
 
     return {
       files: files,
 
-      requiredTypes: {
-        video: false,
-        halfSheet: false,
-        oneSheet: false,
-        descriptionDocument: false
-      },
-
       add: function(newFiles) {
-        var self = this
-
         _.each(newFiles, function(newFile) {
-          validateExtension(['pdf', 'txt', 'doc', 'docx'], newFile).then(function() { // game description
-            self.requiredTypes.descriptionDocument = true
+          validateExtension(supportedTypes.descriptionDocument, newFile).then(function() { // game description
             files.push({ file: newFile, type: 'descriptionDocument' })
           }, function() {
-            validateExtension(['avi', 'mpeg', 'mov', 'mp4', 'ogg', 'm4v', 'webm'], newFile).then(function() { // video
-              self.requiredTypes.video = true
+            validateExtension(supportedTypes.video, newFile).then(function() { // video
               files.push({ file: newFile, type: 'video' })
             }, function() {
               validateImageFile(newFile, [3840, 2160]).then(function() { // Halfsheet specs
-                self.requiredTypes.halfSheet = true
                 files.push({ file: newFile, type: 'halfSheet' })
               }, function() {
                 validateImageFile(newFile, [3072, 4608]).then(function() { // Onesheet specs
-                  self.requiredTypes.oneSheet = true
                   files.push({ file: newFile, type: 'oneSheet' })
                 }, function() {
                   files.push({ file: newFile, type: 'other' }) // Other
@@ -207,7 +199,7 @@ angular.module('myApp')
       var validateExtensions = $q.defer()
 
       if (_.any(extensions, function(extension) {
-        return file.name.substr(-3) === extension
+        return file.name.substr(-extension.length) === extension
       })) {
         validateExtensions.resolve()
       } else {
@@ -221,8 +213,8 @@ angular.module('myApp')
       var validateImageFile = $q.defer()
       var fileReader = new FileReader
 
-      if (_.any(['gif', 'jpeg', 'png'], function(extension) {
-        return file.name.substr(-3) === extension
+      if (_.any(supportedTypes.image, function(extension) {
+        return file.name.substr(-extension.length) === extension
       })) {
         fileReader.onload = function() {
           var img = new Image

@@ -118,8 +118,6 @@ angular.module('myApp')
       }
     })
 
-    $scope.requiredTypes = filesValidator.requiredTypes
-
     user.populateInfo().then(function(user) {
       $scope.user = user
 
