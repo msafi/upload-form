@@ -12,15 +12,16 @@ angular.module('myApp')
       user.setCredentials(oauth)
       user.redirect()
     }
+
+    user.redirect()
   }
 )
 
 .controller('UploadFormCtrl',
-  function($scope, amazonApi, user, filesValidator) {
+  function($scope, amazonApi, user, filesCollection, $timeout) {
     // @todo: get timezone offset
     // @todo: get artistId
     // @todo: get appId
-
     angular.extend($scope, {
       user: {},
 
@@ -29,7 +30,7 @@ angular.module('myApp')
       twitterTypeaheadData: [],
 
       findType: function(fileType) {
-        return _.where(filesValidator.files, { type: fileType })
+        return _.where(filesCollection.get, { assetType: fileType })
       },
 
       initializeAppSuggestions: function() {
@@ -93,47 +94,38 @@ angular.module('myApp')
       },
 
       onFileSelect: function(files) {
-        filesValidator.add(files)
+        filesCollection.add(files).then(function(files) {
+          _.each(files, function(file) {
+            if (file.uploading === undefined) {
+              file.uploading = 'Starting upload...'
 
-//        amazonApi.uploadFile({
-//          Key: $scope.user.id + '/' + file.name,
-//          Body: file,
-//          ContentType: file.type
-//        }).then(
-//          function success() {
-//            delete $scope.uploading
-//
-//            listObjects()
-//          },
-//
-//          function error() {},
-//
-//          function notification(uploadProgress) {
-//            var percentage = parseInt(uploadProgress.loaded / uploadProgress.total * 100)
-//            percentage += '%'
-//
-//            $scope.uploading = { percentage: percentage }
-//          }
-//        )
+              amazonApi.uploadFile({
+                Key: $scope.user.id + '/' + file.name,
+                Body: file,
+                ContentType: file.type
+              }).then(
+                function success() {
+                  file.uploading = 'Complete'
+                },
+
+                function error() {
+                },
+
+                function notification(uploadProgress) {
+                  var percentage = parseInt(uploadProgress.loaded / uploadProgress.total * 100)
+                  percentage += '%'
+
+                  file.uploading = percentage
+                }
+              )
+            }
+          })
+        })
       }
     })
 
     user.populateInfo().then(function(user) {
       $scope.user = user
-
-      listObjects()
     })
-
-    function listObjects() {
-      amazonApi.listObjects({ Prefix: $scope.user.id }).then(function(response) {
-        $scope.user.files = []
-
-        if (!response.data) { return }
-
-        _.each(response.data.Contents, function(file) {
-          $scope.user.files.push(file.Key.replace($scope.user.id + '/', ''))
-        })
-      })
-    }
   }
 )

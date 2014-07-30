@@ -393,31 +393,46 @@
         <li>
           <p>[Added: {{findType('video').length > 0}}] Video (highest quality available) <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
-            <li ng-repeat="fileObject in findType('video')">{{fileObject.file.name}}</li>
+            <li ng-repeat="file in findType('video')">
+              {{file.name}}
+              <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+            </li>
           </ul>
         </li>
         <li>
           <p>[Added: {{findType('oneSheet').length > 0}}] One-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
-            <li ng-repeat="fileObject in findType('oneSheet')">{{fileObject.file.name}}</li>
+            <li ng-repeat="file in findType('oneSheet')">
+              {{file.name}}
+              <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+            </li>
           </ul>
         </li>
         <li>
           <p>[Added: {{findType('halfSheet').length > 0}}] Half-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
-            <li ng-repeat="fileObject in findType('halfSheet')">{{fileObject.file.name}}</li>
+            <li ng-repeat="file in findType('halfSheet')">
+              {{file.name}}
+              <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+            </li>
           </ul>
         </li>
         <li>
           <p>[Added: {{findType('descriptionDocument').length > 0}}] Game description document <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
-            <li ng-repeat="fileObject in findType('descriptionDocument')">{{fileObject.file.name}}</li>
+            <li ng-repeat="file in findType('descriptionDocument')">
+              {{file.name}}
+              <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+            </li>
           </ul>
         </li>
         <li>
           <p>[Added: {{findType('other').length > 0}}] Any other files or assets you have for your game <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
-            <li ng-repeat="fileObject in findType('other')">{{fileObject.file.name}}</li>
+            <li ng-repeat="file in findType('other')">
+              {{file.name}}
+              <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+            </li>
           </ul>
         </li>
       </ul>

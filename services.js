@@ -66,7 +66,10 @@ angular.module('myApp')
               })
             })
             .on('complete', function() {
-              fileUploadResponse.resolve(true)
+              fileUploadResponse.resolve()
+            })
+            .on('error', function() {
+              console.log(arguments)
             })
             .send()
         })
@@ -100,13 +103,10 @@ angular.module('myApp')
 .service('user',
   function($state, $q) {
     var user = {}
-    var credentials = {}
+    var credentials
 
     return {
       redirect: function() {
-        $state.go('uploadForm')
-        return
-
         if (this.isAuthenticated()) {
           $state.go('uploadForm')
         } else {
@@ -116,8 +116,14 @@ angular.module('myApp')
 
       isAuthenticated: function() {
         var currentTime = parseInt(new Date().valueOf() / 1000)
+        credentials = credentials || (localStorage['credentials'] && JSON.parse(localStorage['credentials']))
 
-        return credentials && credentials.expires_at > currentTime
+        if (credentials && credentials.expires_at > currentTime) {
+          this.setCredentials(credentials)
+          return true
+        } else {
+          return false
+        }
       },
 
       setCredentials: function(newCredentials) {
@@ -127,6 +133,8 @@ angular.module('myApp')
         })
 
         credentials = newCredentials
+        gapi.auth.setToken(credentials)
+        localStorage['credentials'] = JSON.stringify(credentials)
       },
 
       get: function() {
@@ -160,7 +168,7 @@ angular.module('myApp')
   }
 )
 
-.service('filesValidator',
+.service('filesCollection',
   function($q) {
     var files = []
     var supportedTypes = {
@@ -170,72 +178,74 @@ angular.module('myApp')
     }
 
     return {
-      files: files,
+      get: files,
 
       add: function(newFiles) {
-        _.each(newFiles, function(newFile) {
-          validateExtension(supportedTypes.descriptionDocument, newFile).then(function() { // game description
-            files.push({ file: newFile, type: 'descriptionDocument' })
-          }, function() {
-            validateExtension(supportedTypes.video, newFile).then(function() { // video
-              files.push({ file: newFile, type: 'video' })
-            }, function() {
-              validateImageFile(newFile, [3840, 2160]).then(function() { // Halfsheet specs
-                files.push({ file: newFile, type: 'halfSheet' })
-              }, function() {
-                validateImageFile(newFile, [3072, 4608]).then(function() { // Onesheet specs
-                  files.push({ file: newFile, type: 'oneSheet' })
-                }, function() {
-                  files.push({ file: newFile, type: 'other' }) // Other
-                })
-              })
-            })
+        var add = $q.defer()
+        var validations = []
+
+        _.each(newFiles, function(newFile, index) {
+          $q.all({
+            descriptionDocument: validateExtension(supportedTypes.descriptionDocument, newFile),
+            video: validateExtension(supportedTypes.video, newFile),
+            halfSheet: validateImageFile(newFile, [3840, 2160]),
+            oneSheet: validateImageFile(newFile, [3072, 4608])
+          }).then(function(results) {
+            files.push(angular.extend(newFile, {
+              assetType: _.invert(results)['true'] || 'other'
+            }))
+
+            if (index === newFiles.length - 1) {
+              add.resolve(files)
+            }
           })
         })
-      },
-    }
 
-    function validateExtension(extensions, file) {
-      var validateExtensions = $q.defer()
+        return add.promise
 
-      if (_.any(extensions, function(extension) {
-        return file.name.substr(-extension.length) === extension
-      })) {
-        validateExtensions.resolve()
-      } else {
-        validateExtensions.reject()
-      }
+        function validateExtension(extensions, file) {
+          var validateExtensions = $q.defer()
 
-      return validateExtensions.promise
-    }
-
-    function validateImageFile(file, dimensions) {
-      var validateImageFile = $q.defer()
-      var fileReader = new FileReader
-
-      if (_.any(supportedTypes.image, function(extension) {
-        return file.name.substr(-extension.length) === extension
-      })) {
-        fileReader.onload = function() {
-          var img = new Image
-
-          img.onload = function() {
-            if (img.width === dimensions[0] && img.height === dimensions[1]) {
-              validateImageFile.resolve()
-            } else {
-              validateImageFile.reject()
-            }
+          if (_.any(extensions, function(extension) {
+            return file.name.substr(-extension.length) === extension
+          })) {
+            validateExtensions.resolve(true)
+          } else {
+            validateExtensions.resolve(false)
           }
 
-          img.src = fileReader.result
+          return validateExtensions.promise
         }
 
-        fileReader.readAsDataURL(file)
-      } else {
-        validateImageFile.reject()
-      }
+        function validateImageFile(file, dimensions) {
+          var validateImageFile = $q.defer()
+          var fileReader = new FileReader
 
-      return validateImageFile.promise
+          if (_.any(supportedTypes.image, function(extension) {
+            return file.name.substr(-extension.length) === extension
+          })) {
+            fileReader.onload = function() {
+              var img = new Image
+
+              img.onload = function() {
+                if (img.width === dimensions[0] && img.height === dimensions[1]) {
+                  validateImageFile.resolve(true)
+                } else {
+                  validateImageFile.resolve(false)
+                }
+              }
+
+              img.src = fileReader.result
+            }
+
+            fileReader.readAsDataURL(file)
+          } else {
+            validateImageFile.resolve(false)
+          }
+
+          return validateImageFile.promise
+        }
+      },
     }
   }
 )
