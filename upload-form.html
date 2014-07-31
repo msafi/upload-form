@@ -1,37 +1,68 @@
 <h2>App Advice Asset Upload Form</h2>
-<form role="form">
+<form role="form" name="uploadForm" novalidate>
   <div>
     <div class="form-group basic-info">
       <div class="form-group">
-        <label for="user-first-name">First name*</label>
-        <input class="form-control" type="text" ng-model="user.name.givenName" id="user-first-name" placeholder="John">
+        <label for="user-first-name">First name (Required)</label>
+        <input class="form-control"
+               required
+               type="text"
+               ng-model="user.name.givenName"
+               id="user-first-name"
+               placeholder="John"
+               name="userGivenName">
       </div>
 
       <div class="form-group">
-        <label for="user-last-name">Last name*</label>
-        <input class="form-control" type="text" ng-model="user.name.familyName" id="user-family-name"
+        <label for="user-last-name">Last name (Required)</label>
+        <input class="form-control"
+               required
+               type="text"
+               ng-model="user.name.familyName"
+               id="user-family-name"
+               name="userFamilyName"
                placeholder="Appleseed">
       </div>
 
       <div class="form-group">
-        <label for="user-email">Email*</label>
-        <input class="form-control" type="text" ng-model="user.email" id="user-email"
+        <label for="user-email">Email (Required)</label>
+        <input class="form-control"
+               required
+               type="email"
+               ng-model="user.email"
+               id="user-email"
+               name="userEmail"
                placeholder="john.appleseed@icloud.com">
       </div>
 
       <div class="form-group">
         <label for="user-twitter">Twitter</label>
-        <input class="form-control" type="text" ng-model="user.twitter" id="user-twitter" placeholder="@jappleseed">
+        <input class="form-control"
+               type="text"
+               ng-model="user.twitter"
+               id="user-twitter"
+               placeholder="@jappleseed"
+               name="userTwitter">
       </div>
 
       <div class="form-group">
         <label for="user-role">Your role</label>
-        <input class="form-control" type="text" ng-model="user.role" id="user-role" placeholder="Art Director">
+        <input class="form-control"
+               type="text"
+               ng-model="user.role"
+               id="user-role"
+               name="userRole"
+               placeholder="Art Director">
       </div>
 
       <div class="form-group">
         <label for="user-phone">Phone number</label>
-        <input class="form-control" type="text" ng-model="user.phone" id="user-phone" placeholder="555-555-5555">
+        <input class="form-control"
+               type="text"
+               ng-model="user.phone"
+               id="user-phone"
+               name="userPhone"
+               placeholder="555-555-5555">
       </div>
     </div>
 
@@ -39,12 +70,12 @@
 
     <div class="form-group">
       <div>
-        <p>Is your new game already in the App Store?</p>
+        <p>Is your new game already in the App Store? (Required)</p>
 
         <div class="radio">
           <label>
             <input type="radio"
-                   name="new-game-published"
+                   name="userHasPublishedGame"
                    ng-value="true"
                    ng-change="initializeAppSuggestions()"
                    ng-model="user.hasPublishedGame">Yes
@@ -54,7 +85,7 @@
         <div class="radio">
           <label>
             <input type="radio"
-                   name="new-game-published"
+                   name="userHasPublishedGame"
                    ng-value="false"
                    ng-change="initializeAppSuggestions()"
                    ng-model="user.hasPublishedGame">No
@@ -63,12 +94,13 @@
       </div>
 
       <div ng-if="user.hasPublishedGame === false">
-        <p>Have you published any app to the App Store before?</p>
+        <p>Have you published any app to the App Store before? (Required)</p>
 
         <div class="radio">
           <label>
             <input type="radio"
-                   name="has-published"
+                   required
+                   name="userHasPublishedApp"
                    ng-value="true"
                    ng-change="initializeAppSuggestions()"
                    ng-model="user.hasPublishedApp">Yes
@@ -78,7 +110,8 @@
         <div class="radio">
           <label>
             <input type="radio"
-                   name="has-published"
+                   required
+                   name="userHasPublishedApp"
                    ng-value="false"
                    ng-change="initializeAppSuggestions()"
                    ng-model="user.hasPublishedApp">No
@@ -91,6 +124,7 @@
           In which country is it published?
           <select class="form-control"
                   ng-model="user.publishedAppRegion"
+                  name="userPublishedAppRegion"
                   ng-init="user.publishedAppRegion = 'US'"
                   ng-change="initializeAppSuggestions()">
             <option value="AF">Afghanistan</option>
@@ -341,41 +375,65 @@
                  type="text"
                  options="twitterTypeaheadOptions"
                  datasets="twitterTypeaheadData"
+                 name="userPublishedApp"
                  ng-model="user.publishedApp"
                  id="user-published-app-name">
           <span ng-if="contactingItunes">Searching the App Store...</span>
         </div>
       </div>
 
-      <div ng-if="publishedAppIsFound(user.publishedApp) || (user.hasPublishedApp === false && user.hasPublishedGame === false)">
+      <div ng-show="publishedAppIsFound(user.publishedApp) || (user.hasPublishedApp === false && user.hasPublishedGame === false)">
         <div class="form-group">
-          <label for="user-developer-name">Title of your game</label>
-          <input class="form-control" type="text" ng-model="user.publishedApp.trackName">
+          <label for="user-developer-name">Title of your game (Required)</label>
+          <input class="form-control"
+                 required
+                 type="text"
+                 ng-model="user.publishedApp.trackName"
+                 name="userPublishedAppName">
         </div>
 
         <div class="form-group">
-          <label for="user-developer-name">Your company name</label>
-          <input class="form-control" type="text" ng-model="user.publishedApp.artistName">
+          <label for="user-developer-name">Your company name (Required)</label>
+          <input class="form-control"
+                 required
+                 type="text"
+                 ng-model="user.publishedApp.artistName"
+                 name="userPublishedAppArtistName">
         </div>
 
         <div class="form-group">
-          <label for="user-developer-name">Genre of your game</label>
-          <input class="form-control" type="text" ng-model="user.publishedApp.genreName">
+          <label for="user-developer-name">Genre of your game (Required)</label>
+          <input class="form-control"
+                 required
+                 type="text"
+                 ng-model="user.publishedApp.genreName"
+                 name="userPublishedAppGenre">
         </div>
 
         <div class="form-group">
           <label for="user-new-game-website">Website of your game</label>
-          <input class="form-control" type="text" ng-model="user.publishedApp.sellerUrl" id="user-new-game-website">
+          <input class="form-control"
+                 type="text"
+                 ng-model="user.publishedApp.sellerUrl"
+                 id="user-new-game-website"
+                 name="userPublishedAppSellerUrl">
         </div>
 
         <div class="form-group">
           <label for="user-new-game-release-date">Expected official launch date of your game</label>
-          <input class="form-control" type="date" ng-model="user.publishedApp.releaseDate" id="user-new-game-release-date">
+          <input class="form-control"
+                 type="date"
+                 ng-model="user.publishedApp.releaseDate"
+                 name="userPublishedAppReleaseDate"
+                 id="user-new-game-release-date">
         </div>
 
         <div class="form-group">
           <label for="user-published-app-twitter-handle">Twitter handle of your new game</label>
-          <input class="form-control" type="text" ng-model="user.publishedAppTwitterHandle">
+          <input class="form-control"
+                 type="text"
+                 name="userPublishedAppTwitterHandle"
+                 ng-model="user.publishedApp.twitterHandle">
         </div>
       </div>
     </div>
@@ -391,7 +449,7 @@
 
       <ul>
         <li>
-          <p>[Added: {{findType('video').length > 0}}] Video (highest quality available) <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('video').length}}, Required: 1] Video (highest quality available) <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
             <li ng-repeat="file in findType('video')">
               {{file.name}}
@@ -400,7 +458,7 @@
           </ul>
         </li>
         <li>
-          <p>[Added: {{findType('oneSheet').length > 0}}] One-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('oneSheet').length}}, Required: 1] One-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
             <li ng-repeat="file in findType('oneSheet')">
               {{file.name}}
@@ -409,16 +467,16 @@
           </ul>
         </li>
         <li>
-          <p>[Added: {{findType('halfSheet').length > 0}}] Half-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('hsAndBs').length}}, Required: 2] Half-sheet and background-sheet posters <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
-            <li ng-repeat="file in findType('halfSheet')">
+            <li ng-repeat="file in findType('hsAndBs')">
               {{file.name}}
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
             </li>
           </ul>
         </li>
         <li>
-          <p>[Added: {{findType('descriptionDocument').length > 0}}] Game description document <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('descriptionDocument').length}}, Required: 1] Game description document <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
             <li ng-repeat="file in findType('descriptionDocument')">
               {{file.name}}
@@ -427,7 +485,7 @@
           </ul>
         </li>
         <li>
-          <p>[Added: {{findType('other').length > 0}}] Any other files or assets you have for your game <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('other').length}}, Required: any] Any other files or assets you have for your game <button class="glyphicon glyphicon-info-sign"></button></p>
           <ul>
             <li ng-repeat="file in findType('other')">
               {{file.name}}
@@ -477,10 +535,20 @@
 
       <hr>
 
-      <div>
-        <h4>Questions or need help?</h4>
-        <p>Having trouble with this page? Contact us at <a href="mailto:support@appadvice.com">support@appadvice.com</a> and we’ll help you sort it out.</p>
-      </div>
+      <button ng-click="submitForm()" name="submitButton" ng-disabled="submitButtonDisabled">
+        Submit
+      </button>
+      <span ng-if="submitStatus !== undefined">[Status: {{submitStatus}}]</span>
+
+      <hr>
+
     </div>
   </div>
 </form>
+
+<div>
+  <h4>Questions or need help?</h4>
+
+  <p>Having trouble with this page? Contact us at <a href="mailto:support@appadvice.com">support@appadvice.com</a> and
+    we’ll help you sort it out.</p>
+</div>

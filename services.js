@@ -6,6 +6,7 @@ angular.module('myApp')
     var bucketName = 'upload-form'
     var roleArn = 'arn:aws:iam::901881000271:role/uploader'
     var topicArn = 'arn:aws:sns:eu-west-1:901881000271:upload-form'
+    var snsRegion = 'eu-west-1'
     var s3
     var sns
 
@@ -21,7 +22,7 @@ angular.module('myApp')
             })
 
             s3 = new AWS.S3({ params: { Bucket: bucketName } })
-            sns = new AWS.SNS({ region: 'eu-west-1' })
+            sns = new AWS.SNS({ region: snsRegion })
             amazonAuthenticated = true
           }
 
@@ -66,9 +67,10 @@ angular.module('myApp')
               })
             })
             .on('complete', function() {
-              fileUploadResponse.resolve()
+              fileUploadResponse.resolve(true)
             })
             .on('error', function() {
+              fileUploadResponse.resolve(false)
               console.log(arguments)
             })
             .send()
@@ -77,19 +79,27 @@ angular.module('myApp')
         return fileUploadResponse.promise
       },
 
-      sendNotification: function() {
+      getSignedUrl: function(key) {
+        return s3.getSignedUrl('getObject', {
+          Bucket: bucketName,
+          Key: key,
+          Expires: 78892300 // 25 years in seconds
+        })
+      },
+
+      sendNotification: function(message) {
         var messageStatus = $q.defer()
 
         this.authenticate().then(function() {
           sns.publish({
             TopicArn: topicArn,
-            Message: 'Hi Andy,\n\nThis is the message.\n\nThis is a new line in the same message.\n\nKtnxbai,\n\n-MK',
-            Subject: 'New files uploaded from a game developer'
+            Subject: message.subject,
+            Message: message.body,
           }, function(error, data) {
             if (error !== null) {
-              messageStatus.reject()
+              messageStatus.resolve(false)
             } else {
-              messageStatus.resolve()
+              messageStatus.resolve(true)
             }
           })
         })
@@ -178,20 +188,21 @@ angular.module('myApp')
     }
 
     return {
-      get: files,
+      get: function() {
+        return files
+      },
 
       add: function(newFiles) {
         var add = $q.defer()
-        var validations = []
 
         _.each(newFiles, function(newFile, index) {
           $q.all({
             descriptionDocument: validateExtension(supportedTypes.descriptionDocument, newFile),
             video: validateExtension(supportedTypes.video, newFile),
-            halfSheet: validateImageFile(newFile, [3840, 2160]),
+            hsAndBs: validateImageFile(newFile, [3840, 2160]),
             oneSheet: validateImageFile(newFile, [3072, 4608])
           }).then(function(results) {
-            files.push(angular.extend(newFile, {
+            files.push(initFile(newFile, {
               assetType: _.invert(results)['true'] || 'other'
             }))
 
@@ -202,6 +213,10 @@ angular.module('myApp')
         })
 
         return add.promise
+
+        function initFile(newFile, newProperties) {
+          return angular.extend(newFile, newProperties)
+        }
 
         function validateExtension(extensions, file) {
           var validateExtensions = $q.defer()

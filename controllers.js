@@ -12,16 +12,13 @@ angular.module('myApp')
       user.setCredentials(oauth)
       user.redirect()
     }
-
-    user.redirect()
   }
 )
 
 .controller('UploadFormCtrl',
-  function($scope, amazonApi, user, filesCollection, $timeout) {
-    // @todo: get timezone offset
-    // @todo: get artistId
-    // @todo: get appId
+  function($scope, amazonApi, user, filesCollection, $q) {
+    var filesUploaded = []
+
     angular.extend($scope, {
       user: {},
 
@@ -30,7 +27,7 @@ angular.module('myApp')
       twitterTypeaheadData: [],
 
       findType: function(fileType) {
-        return _.where(filesCollection.get, { assetType: fileType })
+        return _.where(filesCollection.get(), { assetType: fileType })
       },
 
       initializeAppSuggestions: function() {
@@ -38,10 +35,7 @@ angular.module('myApp')
         var iphoneAppSuggestions = {}
         var ipadAppSuggestions = {}
         var generateBloodhoundOptions = function(device) {
-          var deviceDictionary = {
-            iphone: 'software',
-            ipad: 'iPadSoftware'
-          }
+          var deviceDictionary = { iphone: 'software', ipad: 'iPadSoftware' }
 
           return {
             datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.trackName) },
@@ -97,22 +91,28 @@ angular.module('myApp')
         filesCollection.add(files).then(function(files) {
           _.each(files, function(file) {
             if (file.uploading === undefined) {
+              file.uploaded = $q.defer()
+              filesUploaded.push(file.uploaded.promise)
+
               file.uploading = 'Starting upload...'
+              file.s3Key = $scope.user.id + '/' + file.name
 
               amazonApi.uploadFile({
-                Key: $scope.user.id + '/' + file.name,
+                Key: file.s3Key,
                 Body: file,
                 ContentType: file.type
               }).then(
                 function success() {
+                  file.signedUrl = amazonApi.getSignedUrl(file.s3Key)
                   file.uploading = 'Complete'
+                  file.uploaded.resolve()
                 },
 
                 function error() {
                 },
 
                 function notification(uploadProgress) {
-                  var percentage = parseInt(uploadProgress.loaded / uploadProgress.total * 100)
+                  var percentage = parseInt(uploadProgress.loaded / uploadProgress.total * 99)
                   percentage += '%'
 
                   file.uploading = percentage
@@ -121,6 +121,45 @@ angular.module('myApp')
             }
           })
         })
+      },
+
+      submitForm: function() {
+        if ($scope.uploadForm.$valid === true) {
+          $scope.submitStatus = 'Waiting for files to be uploaded...'
+          $scope.submitButtonDisabled = true
+
+          $q.all(filesUploaded).then(function() {
+            var exportedUser = angular.copy($scope.user)
+
+            $scope.submitStatus = 'Submitting...'
+
+            delete exportedUser.accessToken
+            delete exportedUser.id
+
+            exportedUser.timezoneOffset = new Date().getTimezoneOffset() / 60
+
+            amazonApi.uploadFile({
+              Key: $scope.user.id + '/userData.json',
+              Body: JSON.stringify(exportedUser, undefined, 2),
+              ContentType: 'application/json'
+            }).then(function() {
+              amazonApi.sendNotification({
+                subject: 'Game assets uploaded by ' +
+                         exportedUser.name.display +
+                         ' from ' +
+                         exportedUser.publishedApp.artistName,
+                body: 'userData.json: ' + amazonApi.getSignedUrl($scope.user.id + '/userData.json') + '\n\n\n' +
+                      _.reduce(filesCollection.get(), function(memo, file) {
+                        return memo + file.name + ': ' + file.signedUrl + '\n\n\n'
+                      }, '')
+              }).then(function() {
+                $scope.submitStatus = 'Form submitted successfully.'
+              })
+            })
+          })
+        } else {
+          $scope.submitStatus = 'Required fields are missing.'
+        }
       }
     })
 
