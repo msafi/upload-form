@@ -137,14 +137,16 @@ angular.module('myApp')
       },
 
       setCredentials: function(newCredentials) {
-        angular.extend(user, {
-          accessToken: newCredentials.access_token,
-          idToken: newCredentials.id_token
-        })
+        if (newCredentials.error.length < 1) {
+          angular.extend(user, {
+            accessToken: newCredentials.access_token,
+            idToken: newCredentials.id_token
+          })
 
-        credentials = newCredentials
-        gapi.auth.setToken(credentials)
-        localStorage['credentials'] = JSON.stringify(credentials)
+          credentials = newCredentials
+          gapi.auth.setToken(credentials)
+          localStorage['credentials'] = JSON.stringify(credentials)
+        }
       },
 
       get: function() {
