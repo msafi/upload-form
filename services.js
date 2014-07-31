@@ -128,7 +128,7 @@ angular.module('myApp')
         var currentTime = parseInt(new Date().valueOf() / 1000)
         credentials = credentials || (localStorage['credentials'] && JSON.parse(localStorage['credentials']))
 
-        if (credentials && credentials.expires_at > currentTime) {
+        if (credentials && credentials.expires_at > currentTime && credentials.error.length < 1) {
           this.setCredentials(credentials)
           return true
         } else {
