@@ -150,7 +150,7 @@ angular.module('myApp')
                          exportedUser.publishedApp.artistName,
                 body: 'userData.json: ' + amazonApi.getSignedUrl($scope.user.id + '/userData.json') + '\n\n\n' +
                       _.reduce(filesCollection.get(), function(memo, file) {
-                        return memo + file.name + ': ' + file.signedUrl + '\n\n\n'
+                        return memo + file.name + ':\n' + file.signedUrl + '\n\n\n'
                       }, '')
               }).then(function() {
                 $scope.submitStatus = 'Form submitted successfully.'
