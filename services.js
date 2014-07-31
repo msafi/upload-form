@@ -128,7 +128,7 @@ angular.module('myApp')
         var currentTime = parseInt(new Date().valueOf() / 1000)
         credentials = credentials || (localStorage['credentials'] && JSON.parse(localStorage['credentials']))
 
-        if (credentials && credentials.expires_at > currentTime && credentials.error.length < 1) {
+        if (credentials && credentials.expires_at > currentTime && credentials.error === undefined) {
           this.setCredentials(credentials)
           return true
         } else {
@@ -137,7 +137,7 @@ angular.module('myApp')
       },
 
       setCredentials: function(newCredentials) {
-        if (newCredentials.error.length < 1) {
+        if (newCredentials.error === undefined) {
           angular.extend(user, {
             accessToken: newCredentials.access_token,
             idToken: newCredentials.id_token
