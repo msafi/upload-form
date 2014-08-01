@@ -133,7 +133,7 @@
       <div class="form-group">
         In which country is it published?
         <select ng-controller="CountrySelectCtrl"
-                ng-options="value for (key, value) in countrySelectOptions"
+                ng-options="key as value for (key, value) in countrySelectOptions"
                 class="form-control"
                 ng-model="user.publishedAppRegion"
                 name="userPublishedAppRegion"

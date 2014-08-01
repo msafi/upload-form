@@ -48,7 +48,7 @@ angular.module('myApp')
           sqs.sendMessage({
             MessageBody: message,
             QueueUrl: sqsEndPoint
-          }, function() {
+          }, function(error, data) {
             if (error !== null) {
               sendSqs.resolve(false)
             } else {
@@ -94,7 +94,6 @@ angular.module('myApp')
             })
             .on('error', function() {
               fileUploadResponse.resolve(false)
-              console.log(arguments)
             })
             .send()
         })
