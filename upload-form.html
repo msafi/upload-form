@@ -1,6 +1,8 @@
-<h2>App Advice Asset Upload Form</h2>
-<form role="form" name="uploadForm" novalidate>
-  <div>
+<div class="inner clearfix">
+  <section id="main-content">
+    <h2>App Advice Asset Upload Form</h2>
+
+    <form role="form" name="uploadForm" novalidate>
     <div class="form-group basic-info">
       <div class="form-group">
         <label for="user-first-name">First name (Required)</label>
@@ -64,381 +66,150 @@
                name="userPhone"
                placeholder="555-555-5555">
       </div>
-    </div>
 
-    <hr>
+      <div class="form-group">
+        <label for="user-phone">Project ID</label>
+        <input class="form-control"
+               type="text"
+               ng-model="pid"
+               id="project-id"
+               disabled
+               name="projectId">
+      </div>
+    </div>
 
     <div class="form-group">
-      <div>
-        <p>Is your new game already in the App Store? (Required)</p>
+    <div>
+      <p>Is your new game already in the App Store? (Required)</p>
 
-        <div class="radio">
-          <label>
-            <input type="radio"
-                   name="userHasPublishedGame"
-                   ng-value="true"
-                   ng-change="initializeAppSuggestions()"
-                   ng-model="user.hasPublishedGame">Yes
-          </label>
-        </div>
-
-        <div class="radio">
-          <label>
-            <input type="radio"
-                   name="userHasPublishedGame"
-                   ng-value="false"
-                   ng-change="initializeAppSuggestions()"
-                   ng-model="user.hasPublishedGame">No
-          </label>
-        </div>
+      <div class="radio">
+        <label>
+          <input type="radio"
+                 name="userHasPublishedGame"
+                 ng-value="true"
+                 ng-change="initializeAppSuggestions()"
+                 ng-model="user.hasPublishedGame">Yes
+        </label>
       </div>
 
-      <div ng-if="user.hasPublishedGame === false">
-        <p>Have you published any app to the App Store before? (Required)</p>
-
-        <div class="radio">
-          <label>
-            <input type="radio"
-                   required
-                   name="userHasPublishedApp"
-                   ng-value="true"
-                   ng-change="initializeAppSuggestions()"
-                   ng-model="user.hasPublishedApp">Yes
-          </label>
-        </div>
-
-        <div class="radio">
-          <label>
-            <input type="radio"
-                   required
-                   name="userHasPublishedApp"
-                   ng-value="false"
-                   ng-change="initializeAppSuggestions()"
-                   ng-model="user.hasPublishedApp">No
-          </label>
-        </div>
-      </div>
-
-      <div ng-if="user.hasPublishedGame > 0 || user.hasPublishedApp > 0">
-        <div class="form-group">
-          In which country is it published?
-          <select class="form-control"
-                  ng-model="user.publishedAppRegion"
-                  name="userPublishedAppRegion"
-                  ng-init="user.publishedAppRegion = 'US'"
-                  ng-change="initializeAppSuggestions()">
-            <option value="AF">Afghanistan</option>
-            <option value="AL">Albania</option>
-            <option value="DZ">Algeria</option>
-            <option value="AS">American Samoa</option>
-            <option value="AD">Andorra</option>
-            <option value="AO">Angola</option>
-            <option value="AI">Anguilla</option>
-            <option value="AQ">Antarctica</option>
-            <option value="AG">Antigua and Barbuda</option>
-            <option value="AR">Argentina</option>
-            <option value="AM">Armenia</option>
-            <option value="AW">Aruba</option>
-            <option value="AU">Australia</option>
-            <option value="AT">Austria</option>
-            <option value="AZ">Azerbaijan</option>
-            <option value="BS">Bahamas</option>
-            <option value="BH">Bahrain</option>
-            <option value="BD">Bangladesh</option>
-            <option value="BB">Barbados</option>
-            <option value="BY">Belarus</option>
-            <option value="BE">Belgium</option>
-            <option value="BZ">Belize</option>
-            <option value="BJ">Benin</option>
-            <option value="BM">Bermuda</option>
-            <option value="BT">Bhutan</option>
-            <option value="BO">Bolivia</option>
-            <option value="BA">Bosnia and Herzegowina</option>
-            <option value="BW">Botswana</option>
-            <option value="BV">Bouvet Island</option>
-            <option value="BR">Brazil</option>
-            <option value="IO">British Indian Ocean Territory</option>
-            <option value="BN">Brunei Darussalam</option>
-            <option value="BG">Bulgaria</option>
-            <option value="BF">Burkina Faso</option>
-            <option value="BI">Burundi</option>
-            <option value="KH">Cambodia</option>
-            <option value="CM">Cameroon</option>
-            <option value="CA">Canada</option>
-            <option value="CV">Cape Verde</option>
-            <option value="KY">Cayman Islands</option>
-            <option value="CF">Central African Republic</option>
-            <option value="TD">Chad</option>
-            <option value="CL">Chile</option>
-            <option value="CN">China</option>
-            <option value="CX">Christmas Island</option>
-            <option value="CC">Cocos (Keeling) Islands</option>
-            <option value="CO">Colombia</option>
-            <option value="KM">Comoros</option>
-            <option value="CG">Congo</option>
-            <option value="CD">Congo, the Democratic Republic of the</option>
-            <option value="CK">Cook Islands</option>
-            <option value="CR">Costa Rica</option>
-            <option value="CI">Cote d'Ivoire</option>
-            <option value="HR">Croatia (Hrvatska)</option>
-            <option value="CU">Cuba</option>
-            <option value="CY">Cyprus</option>
-            <option value="CZ">Czech Republic</option>
-            <option value="DK">Denmark</option>
-            <option value="DJ">Djibouti</option>
-            <option value="DM">Dominica</option>
-            <option value="DO">Dominican Republic</option>
-            <option value="TP">East Timor</option>
-            <option value="EC">Ecuador</option>
-            <option value="EG">Egypt</option>
-            <option value="SV">El Salvador</option>
-            <option value="GQ">Equatorial Guinea</option>
-            <option value="ER">Eritrea</option>
-            <option value="EE">Estonia</option>
-            <option value="ET">Ethiopia</option>
-            <option value="FK">Falkland Islands (Malvinas)</option>
-            <option value="FO">Faroe Islands</option>
-            <option value="FJ">Fiji</option>
-            <option value="FI">Finland</option>
-            <option value="FR">France</option>
-            <option value="FX">France, Metropolitan</option>
-            <option value="GF">French Guiana</option>
-            <option value="PF">French Polynesia</option>
-            <option value="TF">French Southern Territories</option>
-            <option value="GA">Gabon</option>
-            <option value="GM">Gambia</option>
-            <option value="GE">Georgia</option>
-            <option value="DE">Germany</option>
-            <option value="GH">Ghana</option>
-            <option value="GI">Gibraltar</option>
-            <option value="GR">Greece</option>
-            <option value="GL">Greenland</option>
-            <option value="GD">Grenada</option>
-            <option value="GP">Guadeloupe</option>
-            <option value="GU">Guam</option>
-            <option value="GT">Guatemala</option>
-            <option value="GN">Guinea</option>
-            <option value="GW">Guinea-Bissau</option>
-            <option value="GY">Guyana</option>
-            <option value="HT">Haiti</option>
-            <option value="HM">Heard and Mc Donald Islands</option>
-            <option value="VA">Holy See (Vatican City State)</option>
-            <option value="HN">Honduras</option>
-            <option value="HK">Hong Kong</option>
-            <option value="HU">Hungary</option>
-            <option value="IS">Iceland</option>
-            <option value="IN">India</option>
-            <option value="ID">Indonesia</option>
-            <option value="IR">Iran (Islamic Republic of)</option>
-            <option value="IQ">Iraq</option>
-            <option value="IE">Ireland</option>
-            <option value="IL">Israel</option>
-            <option value="IT">Italy</option>
-            <option value="JM">Jamaica</option>
-            <option value="JP">Japan</option>
-            <option value="JO">Jordan</option>
-            <option value="KZ">Kazakhstan</option>
-            <option value="KE">Kenya</option>
-            <option value="KI">Kiribati</option>
-            <option value="KP">Korea, Democratic People's Republic of</option>
-            <option value="KR">Korea, Republic of</option>
-            <option value="KW">Kuwait</option>
-            <option value="KG">Kyrgyzstan</option>
-            <option value="LA">Lao People's Democratic Republic</option>
-            <option value="LV">Latvia</option>
-            <option value="LB">Lebanon</option>
-            <option value="LS">Lesotho</option>
-            <option value="LR">Liberia</option>
-            <option value="LY">Libyan Arab Jamahiriya</option>
-            <option value="LI">Liechtenstein</option>
-            <option value="LT">Lithuania</option>
-            <option value="LU">Luxembourg</option>
-            <option value="MO">Macau</option>
-            <option value="MK">Macedonia, The Former Yugoslav Republic of</option>
-            <option value="MG">Madagascar</option>
-            <option value="MW">Malawi</option>
-            <option value="MY">Malaysia</option>
-            <option value="MV">Maldives</option>
-            <option value="ML">Mali</option>
-            <option value="MT">Malta</option>
-            <option value="MH">Marshall Islands</option>
-            <option value="MQ">Martinique</option>
-            <option value="MR">Mauritania</option>
-            <option value="MU">Mauritius</option>
-            <option value="YT">Mayotte</option>
-            <option value="MX">Mexico</option>
-            <option value="FM">Micronesia, Federated States of</option>
-            <option value="MD">Moldova, Republic of</option>
-            <option value="MC">Monaco</option>
-            <option value="MN">Mongolia</option>
-            <option value="MS">Montserrat</option>
-            <option value="MA">Morocco</option>
-            <option value="MZ">Mozambique</option>
-            <option value="MM">Myanmar</option>
-            <option value="NA">Namibia</option>
-            <option value="NR">Nauru</option>
-            <option value="NP">Nepal</option>
-            <option value="NL">Netherlands</option>
-            <option value="AN">Netherlands Antilles</option>
-            <option value="NC">New Caledonia</option>
-            <option value="NZ">New Zealand</option>
-            <option value="NI">Nicaragua</option>
-            <option value="NE">Niger</option>
-            <option value="NG">Nigeria</option>
-            <option value="NU">Niue</option>
-            <option value="NF">Norfolk Island</option>
-            <option value="MP">Northern Mariana Islands</option>
-            <option value="NO">Norway</option>
-            <option value="OM">Oman</option>
-            <option value="PK">Pakistan</option>
-            <option value="PW">Palau</option>
-            <option value="PA">Panama</option>
-            <option value="PG">Papua New Guinea</option>
-            <option value="PY">Paraguay</option>
-            <option value="PE">Peru</option>
-            <option value="PH">Philippines</option>
-            <option value="PN">Pitcairn</option>
-            <option value="PL">Poland</option>
-            <option value="PT">Portugal</option>
-            <option value="PR">Puerto Rico</option>
-            <option value="QA">Qatar</option>
-            <option value="RE">Reunion</option>
-            <option value="RO">Romania</option>
-            <option value="RU">Russian Federation</option>
-            <option value="RW">Rwanda</option>
-            <option value="KN">Saint Kitts and Nevis</option>
-            <option value="LC">Saint LUCIA</option>
-            <option value="VC">Saint Vincent and the Grenadines</option>
-            <option value="WS">Samoa</option>
-            <option value="SM">San Marino</option>
-            <option value="ST">Sao Tome and Principe</option>
-            <option value="SA">Saudi Arabia</option>
-            <option value="SN">Senegal</option>
-            <option value="SC">Seychelles</option>
-            <option value="SL">Sierra Leone</option>
-            <option value="SG">Singapore</option>
-            <option value="SK">Slovakia (Slovak Republic)</option>
-            <option value="SI">Slovenia</option>
-            <option value="SB">Solomon Islands</option>
-            <option value="SO">Somalia</option>
-            <option value="ZA">South Africa</option>
-            <option value="GS">South Georgia and the South Sandwich Islands</option>
-            <option value="ES">Spain</option>
-            <option value="LK">Sri Lanka</option>
-            <option value="SH">St. Helena</option>
-            <option value="PM">St. Pierre and Miquelon</option>
-            <option value="SD">Sudan</option>
-            <option value="SR">Suriname</option>
-            <option value="SJ">Svalbard and Jan Mayen Islands</option>
-            <option value="SZ">Swaziland</option>
-            <option value="SE">Sweden</option>
-            <option value="CH">Switzerland</option>
-            <option value="SY">Syrian Arab Republic</option>
-            <option value="TW">Taiwan, Province of China</option>
-            <option value="TJ">Tajikistan</option>
-            <option value="TZ">Tanzania, United Republic of</option>
-            <option value="TH">Thailand</option>
-            <option value="TG">Togo</option>
-            <option value="TK">Tokelau</option>
-            <option value="TO">Tonga</option>
-            <option value="TT">Trinidad and Tobago</option>
-            <option value="TN">Tunisia</option>
-            <option value="TR">Turkey</option>
-            <option value="TM">Turkmenistan</option>
-            <option value="TC">Turks and Caicos Islands</option>
-            <option value="TV">Tuvalu</option>
-            <option value="UG">Uganda</option>
-            <option value="UA">Ukraine</option>
-            <option value="AE">United Arab Emirates</option>
-            <option value="GB">United Kingdom</option>
-            <option value="US">United States</option>
-            <option value="UM">United States Minor Outlying Islands</option>
-            <option value="UY">Uruguay</option>
-            <option value="UZ">Uzbekistan</option>
-            <option value="VU">Vanuatu</option>
-            <option value="VE">Venezuela</option>
-            <option value="VN">Viet Nam</option>
-            <option value="VG">Virgin Islands (British)</option>
-            <option value="VI">Virgin Islands (U.S.)</option>
-            <option value="WF">Wallis and Futuna Islands</option>
-            <option value="EH">Western Sahara</option>
-            <option value="YE">Yemen</option>
-            <option value="YU">Yugoslavia</option>
-            <option value="ZM">Zambia</option>
-            <option value="ZW">Zimbabwe</option>
-          </select>
-        </div>
-
-        <div class="form-group" ng-if="user.publishedAppRegion">
-          <label for="user-published-app-name">Find it on the App Store:</label>
-          <input class="form-control sfTypeahead"
-                 type="text"
-                 options="twitterTypeaheadOptions"
-                 datasets="twitterTypeaheadData"
-                 name="userPublishedApp"
-                 ng-model="user.publishedApp"
-                 id="user-published-app-name">
-          <span ng-if="contactingItunes">Searching the App Store...</span>
-        </div>
-      </div>
-
-      <div ng-show="publishedAppIsFound(user.publishedApp) || (user.hasPublishedApp === false && user.hasPublishedGame === false)">
-        <div class="form-group">
-          <label for="user-developer-name">Title of your game (Required)</label>
-          <input class="form-control"
-                 required
-                 type="text"
-                 ng-model="user.publishedApp.trackName"
-                 name="userPublishedAppName">
-        </div>
-
-        <div class="form-group">
-          <label for="user-developer-name">Your company name (Required)</label>
-          <input class="form-control"
-                 required
-                 type="text"
-                 ng-model="user.publishedApp.artistName"
-                 name="userPublishedAppArtistName">
-        </div>
-
-        <div class="form-group">
-          <label for="user-developer-name">Genre of your game (Required)</label>
-          <input class="form-control"
-                 required
-                 type="text"
-                 ng-model="user.publishedApp.genreName"
-                 name="userPublishedAppGenre">
-        </div>
-
-        <div class="form-group">
-          <label for="user-new-game-website">Website of your game</label>
-          <input class="form-control"
-                 type="text"
-                 ng-model="user.publishedApp.sellerUrl"
-                 id="user-new-game-website"
-                 name="userPublishedAppSellerUrl">
-        </div>
-
-        <div class="form-group">
-          <label for="user-new-game-release-date">Expected official launch date of your game</label>
-          <input class="form-control"
-                 type="date"
-                 ng-model="user.publishedApp.releaseDate"
-                 name="userPublishedAppReleaseDate"
-                 id="user-new-game-release-date">
-        </div>
-
-        <div class="form-group">
-          <label for="user-published-app-twitter-handle">Twitter handle of your new game</label>
-          <input class="form-control"
-                 type="text"
-                 name="userPublishedAppTwitterHandle"
-                 ng-model="user.publishedApp.twitterHandle">
-        </div>
+      <div class="radio">
+        <label>
+          <input type="radio"
+                 name="userHasPublishedGame"
+                 ng-value="false"
+                 ng-change="initializeAppSuggestions()"
+                 ng-model="user.hasPublishedGame">No
+        </label>
       </div>
     </div>
 
-    <hr>
+    <div ng-if="user.hasPublishedGame === false">
+      <p>Have you published any app to the App Store before? (Required)</p>
+
+      <div class="radio">
+        <label>
+          <input type="radio"
+                 required
+                 name="userHasPublishedApp"
+                 ng-value="true"
+                 ng-change="initializeAppSuggestions()"
+                 ng-model="user.hasPublishedApp">Yes
+        </label>
+      </div>
+
+      <div class="radio">
+        <label>
+          <input type="radio"
+                 required
+                 name="userHasPublishedApp"
+                 ng-value="false"
+                 ng-change="initializeAppSuggestions()"
+                 ng-model="user.hasPublishedApp">No
+        </label>
+      </div>
+    </div>
+
+    <div ng-if="user.hasPublishedGame > 0 || user.hasPublishedApp > 0">
+      <div class="form-group">
+        In which country is it published?
+        <select ng-controller="CountrySelectCtrl"
+                ng-options="value for (key, value) in countrySelectOptions"
+                class="form-control"
+                ng-model="user.publishedAppRegion"
+                name="userPublishedAppRegion"
+                ng-change="initializeAppSuggestions()">
+        </select>
+      </div>
+
+      <div class="form-group" ng-if="user.publishedAppRegion">
+        <label for="user-published-app-name">Find it on the App Store:</label>
+        <input class="form-control sfTypeahead"
+               type="text"
+               options="twitterTypeaheadOptions"
+               datasets="twitterTypeaheadData"
+               name="userPublishedApp"
+               ng-model="user.publishedApp"
+               id="user-published-app-name">
+        <span ng-if="contactingItunes">Searching the App Store...</span>
+      </div>
+    </div>
+
+    <div
+      ng-show="publishedAppIsFound(user.publishedApp) || (user.hasPublishedApp === false && user.hasPublishedGame === false)">
+      <div class="form-group">
+        <label for="user-developer-name">Title of your game (Required)</label>
+        <input class="form-control"
+               required
+               type="text"
+               ng-model="user.publishedApp.trackName"
+               name="userPublishedAppName">
+      </div>
+
+      <div class="form-group">
+        <label for="user-developer-name">Your company name (Required)</label>
+        <input class="form-control"
+               required
+               type="text"
+               ng-model="user.publishedApp.artistName"
+               name="userPublishedAppArtistName">
+      </div>
+
+      <div class="form-group">
+        <label for="user-developer-name">Genre of your game (Required)</label>
+        <input class="form-control"
+               required
+               type="text"
+               ng-model="user.publishedApp.genreName"
+               name="userPublishedAppGenre">
+      </div>
+
+      <div class="form-group">
+        <label for="user-new-game-website">Website of your game</label>
+        <input class="form-control"
+               type="text"
+               ng-model="user.publishedApp.sellerUrl"
+               id="user-new-game-website"
+               name="userPublishedAppSellerUrl">
+      </div>
+
+      <div class="form-group">
+        <label for="user-new-game-release-date">Expected official launch date of your game</label>
+        <input class="form-control"
+               type="date"
+               ng-model="user.publishedApp.releaseDate"
+               name="userPublishedAppReleaseDate"
+               id="user-new-game-release-date">
+      </div>
+
+      <div class="form-group">
+        <label for="user-published-app-twitter-handle">Twitter handle of your new game</label>
+        <input class="form-control"
+               type="text"
+               name="userPublishedAppTwitterHandle"
+               ng-model="user.publishedApp.twitterHandle">
+      </div>
+    </div>
+    </div>
 
     <div class="upload">
       <h3>Upload your stuff</h3>
@@ -449,7 +220,8 @@
 
       <ul>
         <li>
-          <p>[Added: {{findType('video').length}}, Required: 1] Video (highest quality available) <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('video').length}}, Required: 1] Video (highest quality available)
+          </p>
           <ul>
             <li ng-repeat="file in findType('video')">
               {{file.name}}
@@ -458,7 +230,8 @@
           </ul>
         </li>
         <li>
-          <p>[Added: {{findType('oneSheet').length}}, Required: 1] One-sheet poster <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('oneSheet').length}}, Required: 1] One-sheet poster
+          </p>
           <ul>
             <li ng-repeat="file in findType('oneSheet')">
               {{file.name}}
@@ -467,7 +240,8 @@
           </ul>
         </li>
         <li>
-          <p>[Added: {{findType('hsAndBs').length}}, Required: 2] Half-sheet and background-sheet posters <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('hsAndBs').length}}, Required: 2] Half-sheet and background-sheet posters
+          </p>
           <ul>
             <li ng-repeat="file in findType('hsAndBs')">
               {{file.name}}
@@ -476,7 +250,8 @@
           </ul>
         </li>
         <li>
-          <p>[Added: {{findType('descriptionDocument').length}}, Required: 1] Game description document <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('descriptionDocument').length}}, Required: 1] Game description document
+          </p>
           <ul>
             <li ng-repeat="file in findType('descriptionDocument')">
               {{file.name}}
@@ -485,7 +260,8 @@
           </ul>
         </li>
         <li>
-          <p>[Added: {{findType('other').length}}, Required: any] Any other files or assets you have for your game <button class="glyphicon glyphicon-info-sign"></button></p>
+          <p>[Added: {{findType('other').length}}, Required: any] Any other files or assets you have for your game
+          </p>
           <ul>
             <li ng-repeat="file in findType('other')">
               {{file.name}}
@@ -527,28 +303,33 @@
                multiple="multiple">
       </div>
 
-      <hr>
-
       <div>
-        <p>By uploading files you agree to <a href="/gaming-soon-resources/terms_of_use.pdf">AppAdvice Terms of Use</a> and <a href="/gaming-soon-resources/privacy_policy.html">Privacy Policy</a></p>
+        <p>By uploading files you agree to <a href="/gaming-soon-resources/terms_of_use.pdf">AppAdvice Terms of Use</a>
+          and <a href="/gaming-soon-resources/privacy_policy.html">Privacy Policy</a></p>
       </div>
-
-      <hr>
 
       <button ng-click="submitForm()" name="submitButton" ng-disabled="submitButtonDisabled">
         Submit
       </button>
       <span ng-if="submitStatus !== undefined">[Status: {{submitStatus}}]</span>
 
-      <hr>
-
     </div>
-  </div>
-</form>
+    <div>
+      <h4>Questions or need help?</h4>
 
-<div>
-  <h4>Questions or need help?</h4>
+      <p>Having trouble with this page? Contact us at <a href="mailto:support@appadvice.com">support@appadvice.com</a>
+        and
+        we’ll help you sort it out.</p>
+    </div>
+    </form>
+  </section>
 
-  <p>Having trouble with this page? Contact us at <a href="mailto:support@appadvice.com">support@appadvice.com</a> and
-    we’ll help you sort it out.</p>
+  <aside id="sidebar">
+    <a href="gaming_soon_resources/PosterSpec_V1.zip" class="button">
+      <small>Download</small>
+      Asset Spec
+    </a>
+
+    <p class="repo-owner">More info on spec available <a href="http://appadvice.com">here</a>.</p>
+  </aside>
 </div>

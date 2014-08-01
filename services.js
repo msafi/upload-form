@@ -5,10 +5,12 @@ angular.module('myApp')
     var amazonAuthenticated = false
     var bucketName = 'upload-form'
     var roleArn = 'arn:aws:iam::901881000271:role/uploader'
-    var topicArn = 'arn:aws:sns:eu-west-1:901881000271:upload-form'
-    var snsRegion = 'eu-west-1'
+    var snsTopicArn = 'arn:aws:sns:eu-west-1:901881000271:upload-form'
+    var sqsEndPoint = 'https://sqs.eu-west-1.amazonaws.com/901881000271/upload-form'
+    var region = 'eu-west-1'
     var s3
     var sns
+    var sqs
 
     return {
       authenticate: function() {
@@ -22,7 +24,9 @@ angular.module('myApp')
             })
 
             s3 = new AWS.S3({ params: { Bucket: bucketName } })
-            sns = new AWS.SNS({ region: snsRegion })
+            sns = new AWS.SNS({ region: region })
+            sqs = new AWS.SQS({ region: region })
+
             amazonAuthenticated = true
           }
 
@@ -35,6 +39,25 @@ angular.module('myApp')
         }
 
         return credentials.promise
+      },
+
+      sendSqs: function(message) {
+        var sendSqs = $q.defer()
+
+        this.authenticate().then(function() {
+          sqs.sendMessage({
+            MessageBody: message,
+            QueueUrl: sqsEndPoint
+          }, function() {
+            if (error !== null) {
+              sendSqs.resolve(false)
+            } else {
+              sendSqs.resolve(true)
+            }
+          })
+        })
+
+        return sendSqs.promise
       },
 
       listObjects: function(options) {
@@ -87,12 +110,12 @@ angular.module('myApp')
         })
       },
 
-      sendNotification: function(message) {
+      sendSns: function(message) {
         var messageStatus = $q.defer()
 
         this.authenticate().then(function() {
           sns.publish({
-            TopicArn: topicArn,
+            TopicArn: snsTopicArn,
             Subject: message.subject,
             Message: message.body,
           }, function(error, data) {
