@@ -93,8 +93,8 @@ angular.module('myApp')
           var options = {
             Bucket: bucketName,
             ACL: 'public-read',
-            Key: file.s3Key,
-            Body: file,
+            Key: file.key,
+            Body: file.body || file,
             ContentType: file.type
           }
 

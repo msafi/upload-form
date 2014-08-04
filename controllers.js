@@ -95,7 +95,7 @@ angular.module('myApp')
               file.uploading = 'Starting upload...'
               file.uuid = uuid()
               file.userId = $scope.form.user.id
-              file.s3Key = file.userId + '/' + file.uuid + '-' + file.name
+              file.key = file.userId + '/' + file.uuid + '-' + file.name
 
               amazonApi.uploadFile(file).then(
                 function success() {
@@ -163,12 +163,9 @@ angular.module('myApp')
             formDataJson.userId = $scope.form.user.id
             formDataJson.key = formDataJson.userId + '/' + formDataJson.uuid + '-' + formDataJson.name
             formDataJson.body = JSON.stringify(exportedData, undefined, 2)
+            formDataJson.type = 'application/json'
 
-            amazonApi.uploadFile({
-              Key: formDataJson.key,
-              Body: formDataJson.body,
-              ContentType: 'application/json'
-            }).then(function() {
+            amazonApi.uploadFile(formDataJson).then(function() {
               $q.all([
                 amazonApi.sendSns({
                   subject: 'Game assets uploaded by ' +
