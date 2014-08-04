@@ -2,6 +2,7 @@ angular.module('myApp')
 
 .service('amazonApi',
   function($q, user) {
+    var cancellablePutObjectRequests = []
     var amazonAuthenticated = false
     var bucketName = 'upload-form'
     var roleArn = 'arn:aws:iam::901881000271:role/uploader'
@@ -75,31 +76,49 @@ angular.module('myApp')
         return files.promise
       },
 
-      uploadFile: function(options) {
+      abortUpload: function(file) {
+        var putObjectRequest = _.find(cancellablePutObjectRequests, { fileName: file.name })
+
+        if (putObjectRequest !== undefined) {
+          putObjectRequest.abort()
+          _.remove(cancellablePutObjectRequests, { fileName: file.name })
+        }
+      },
+
+      uploadFile: function(file) {
         var fileUploadResponse = $q.defer()
 
         this.authenticate().then(function() {
-          options = options || {}
-          options.Bucket = bucketName
-          options.ACL = 'public-read'
+          var putObjectRequest
+          var options = {
+            Bucket: bucketName,
+            ACL: 'public-read',
+            Key: file.s3Key,
+            Body: file,
+            ContentType: file.type
+          }
 
-          s3.putObject(options)
-            .on('httpUploadProgress', function(uploadProgress) {
-              fileUploadResponse.notify({
-                loaded: uploadProgress.loaded,
-                total: uploadProgress.total
-              })
+          putObjectRequest = s3.putObject(options)
+
+          putObjectRequest.on('httpUploadProgress', function(uploadProgress) {
+            fileUploadResponse.notify({
+              loaded: uploadProgress.loaded,
+              total: uploadProgress.total
             })
-            .on('complete', function() {
-              fileUploadResponse.resolve(true)
-            })
-            .on('error', function(error) {
-              console.log(error)
-              fileUploadResponse.resolve(false)
-            })
-            .send(function() {
-              console.log(arguments)
-            })
+          })
+
+          putObjectRequest.on('complete', function() {
+            fileUploadResponse.resolve(true)
+          })
+
+          putObjectRequest.on('error', function(error) {
+            console.log(error)
+            fileUploadResponse.resolve(false)
+          })
+
+          putObjectRequest.send()
+
+          cancellablePutObjectRequests.push({ abort: putObjectRequest.abort.bind(putObjectRequest), fileName: file.name })
         })
 
         return fileUploadResponse.promise
@@ -211,7 +230,7 @@ angular.module('myApp')
 )
 
 .service('filesCollection',
-  function($q) {
+  function($q, amazonApi) {
     var files = []
     var supportedTypes = {
       descriptionDocument: ['pdf', 'txt', 'doc', 'docx'],
@@ -222,6 +241,14 @@ angular.module('myApp')
     return {
       get: function() {
         return files
+      },
+
+      remove: function(fileToBeRemoved) {
+        files = _.filter(files, function(file) {
+          return file.name !== fileToBeRemoved.name
+        })
+
+        amazonApi.abortUpload(fileToBeRemoved)
       },
 
       add: function(newFiles) {

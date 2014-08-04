@@ -226,6 +226,7 @@
             <li ng-repeat="file in findType('video')">
               <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+              <button ng-click="removeFile(file)">Cancel</button>
             </li>
           </ul>
         </li>
@@ -236,6 +237,7 @@
             <li ng-repeat="file in findType('oneSheet')">
               <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+              <button ng-click="removeFile(file)">Cancel</button>
             </li>
           </ul>
         </li>
@@ -246,6 +248,7 @@
             <li ng-repeat="file in findType('hsAndBs')">
               <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+              <button ng-click="removeFile(file)">Cancel</button>
             </li>
           </ul>
         </li>
@@ -256,6 +259,7 @@
             <li ng-repeat="file in findType('descriptionDocument')">
               <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+              <button ng-click="removeFile(file)">Cancel</button>
             </li>
           </ul>
         </li>
@@ -266,6 +270,7 @@
             <li ng-repeat="file in findType('other')">
               <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
+              <button ng-click="removeFile(file)">Cancel</button>
             </li>
           </ul>
         </li>

@@ -97,11 +97,7 @@ angular.module('myApp')
               file.userId = $scope.form.user.id
               file.s3Key = file.userId + '/' + file.uuid + '-' + file.name
 
-              amazonApi.uploadFile({
-                Key: file.s3Key,
-                Body: file,
-                ContentType: file.type
-              }).then(
+              amazonApi.uploadFile(file).then(
                 function success() {
                   file.url = amazonApi.getUrl(file)
                   file.uploading = 'Complete'
@@ -120,6 +116,10 @@ angular.module('myApp')
             }
           })
         })
+      },
+
+      removeFile: function(file) {
+        filesCollection.remove(file)
       },
 
       submitForm: function() {
