@@ -27,6 +27,9 @@ angular.module('myApp', [
         controller: 'RequireLoginCtrl',
         templateUrl: 'require-login.html'
       })
+      .state('thankYou', {
+        templateUrl: 'thank-you.html'
+      })
 
     $locationProvider
       .html5Mode(true)

@@ -81,6 +81,7 @@ angular.module('myApp')
         this.authenticate().then(function() {
           options = options || {}
           options.Bucket = bucketName
+          options.ACL = 'public-read'
 
           s3.putObject(options)
             .on('httpUploadProgress', function(uploadProgress) {
@@ -92,10 +93,13 @@ angular.module('myApp')
             .on('complete', function() {
               fileUploadResponse.resolve(true)
             })
-            .on('error', function() {
+            .on('error', function(error) {
+              console.log(error)
               fileUploadResponse.resolve(false)
             })
-            .send()
+            .send(function() {
+              console.log(arguments)
+            })
         })
 
         return fileUploadResponse.promise
@@ -107,6 +111,10 @@ angular.module('myApp')
           Key: key,
           Expires: 78892300 // 25 years in seconds
         })
+      },
+
+      getUrl: function(file) {
+        return 'https://s3.amazonaws.com/' + bucketName + '/' + file.userId + '/' + file.uuid + '-' + encodeURIComponent(file.name)
       },
 
       sendSns: function(message) {
@@ -286,5 +294,17 @@ angular.module('myApp')
         }
       },
     }
+  }
+)
+
+// http://stackoverflow.com/a/8809472/604296
+.service('uuid',
+  function() {
+    return function generateUUID() {
+      return 'xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    };
   }
 )

@@ -9,7 +9,7 @@
         <input class="form-control"
                required
                type="text"
-               ng-model="user.name.givenName"
+               ng-model="form.user.name.givenName"
                id="user-first-name"
                placeholder="John"
                name="userGivenName">
@@ -20,7 +20,7 @@
         <input class="form-control"
                required
                type="text"
-               ng-model="user.name.familyName"
+               ng-model="form.user.name.familyName"
                id="user-family-name"
                name="userFamilyName"
                placeholder="Appleseed">
@@ -31,7 +31,7 @@
         <input class="form-control"
                required
                type="email"
-               ng-model="user.email"
+               ng-model="form.user.email"
                id="user-email"
                name="userEmail"
                placeholder="john.appleseed@icloud.com">
@@ -41,7 +41,7 @@
         <label for="user-twitter">Twitter</label>
         <input class="form-control"
                type="text"
-               ng-model="user.twitter"
+               ng-model="form.user.twitter"
                id="user-twitter"
                placeholder="@jappleseed"
                name="userTwitter">
@@ -51,7 +51,7 @@
         <label for="user-role">Your role</label>
         <input class="form-control"
                type="text"
-               ng-model="user.role"
+               ng-model="form.user.role"
                id="user-role"
                name="userRole"
                placeholder="Art Director">
@@ -61,13 +61,13 @@
         <label for="user-phone">Phone number</label>
         <input class="form-control"
                type="text"
-               ng-model="user.phone"
+               ng-model="form.user.phone"
                id="user-phone"
                name="userPhone"
                placeholder="555-555-5555">
       </div>
 
-      <div class="form-group">
+      <div class="form-group" ng-if="pid">
         <label for="user-phone">Project ID</label>
         <input class="form-control"
                type="text"
@@ -88,7 +88,7 @@
                  name="userHasPublishedGame"
                  ng-value="true"
                  ng-change="initializeAppSuggestions()"
-                 ng-model="user.hasPublishedGame">Yes
+                 ng-model="form.hasPublishedGame">Yes
         </label>
       </div>
 
@@ -98,12 +98,12 @@
                  name="userHasPublishedGame"
                  ng-value="false"
                  ng-change="initializeAppSuggestions()"
-                 ng-model="user.hasPublishedGame">No
+                 ng-model="form.hasPublishedGame">No
         </label>
       </div>
     </div>
 
-    <div ng-if="user.hasPublishedGame === false">
+    <div ng-if="form.hasPublishedGame === false">
       <p>Have you published any app to the App Store before? (Required)</p>
 
       <div class="radio">
@@ -113,7 +113,7 @@
                  name="userHasPublishedApp"
                  ng-value="true"
                  ng-change="initializeAppSuggestions()"
-                 ng-model="user.hasPublishedApp">Yes
+                 ng-model="form.hasPublishedApp">Yes
         </label>
       </div>
 
@@ -124,44 +124,44 @@
                  name="userHasPublishedApp"
                  ng-value="false"
                  ng-change="initializeAppSuggestions()"
-                 ng-model="user.hasPublishedApp">No
+                 ng-model="form.hasPublishedApp">No
         </label>
       </div>
     </div>
 
-    <div ng-if="user.hasPublishedGame > 0 || user.hasPublishedApp > 0">
+    <div ng-if="form.hasPublishedGame > 0 || form.hasPublishedApp > 0">
       <div class="form-group">
         In which country is it published?
         <select ng-controller="CountrySelectCtrl"
                 ng-options="key as value for (key, value) in countrySelectOptions"
                 class="form-control"
-                ng-model="user.publishedAppRegion"
+                ng-model="form.publishedAppRegion"
                 name="userPublishedAppRegion"
                 ng-change="initializeAppSuggestions()">
         </select>
       </div>
 
-      <div class="form-group" ng-if="user.publishedAppRegion">
+      <div class="form-group" ng-if="form.publishedAppRegion">
         <label for="user-published-app-name">Find it on the App Store:</label>
         <input class="form-control sfTypeahead"
                type="text"
                options="twitterTypeaheadOptions"
                datasets="twitterTypeaheadData"
                name="userPublishedApp"
-               ng-model="user.publishedApp"
+               ng-model="form.itunesApp"
                id="user-published-app-name">
         <span ng-if="contactingItunes">Searching the App Store...</span>
       </div>
     </div>
 
     <div
-      ng-show="publishedAppIsFound(user.publishedApp) || (user.hasPublishedApp === false && user.hasPublishedGame === false)">
+      ng-show="publishedAppIsFound(form.itunesApp) || (form.hasPublishedApp === false && form.hasPublishedGame === false)">
       <div class="form-group">
         <label for="user-developer-name">Title of your game (Required)</label>
         <input class="form-control"
                required
                type="text"
-               ng-model="user.publishedApp.trackName"
+               ng-model="form.game.trackName"
                name="userPublishedAppName">
       </div>
 
@@ -170,7 +170,7 @@
         <input class="form-control"
                required
                type="text"
-               ng-model="user.publishedApp.artistName"
+               ng-model="form.game.artistName"
                name="userPublishedAppArtistName">
       </div>
 
@@ -179,7 +179,7 @@
         <input class="form-control"
                required
                type="text"
-               ng-model="user.publishedApp.genreName"
+               ng-model="form.game.genreName"
                name="userPublishedAppGenre">
       </div>
 
@@ -187,7 +187,7 @@
         <label for="user-new-game-website">Website of your game</label>
         <input class="form-control"
                type="text"
-               ng-model="user.publishedApp.sellerUrl"
+               ng-model="form.game.sellerUrl"
                id="user-new-game-website"
                name="userPublishedAppSellerUrl">
       </div>
@@ -196,7 +196,7 @@
         <label for="user-new-game-release-date">Expected official launch date of your game</label>
         <input class="form-control"
                type="date"
-               ng-model="user.publishedApp.releaseDate"
+               ng-model="form.game.releaseDate"
                name="userPublishedAppReleaseDate"
                id="user-new-game-release-date">
       </div>
@@ -206,7 +206,7 @@
         <input class="form-control"
                type="text"
                name="userPublishedAppTwitterHandle"
-               ng-model="user.publishedApp.twitterHandle">
+               ng-model="form.game.twitterHandle">
       </div>
     </div>
     </div>
@@ -224,7 +224,7 @@
           </p>
           <ul>
             <li ng-repeat="file in findType('video')">
-              {{file.name}}
+              <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
             </li>
           </ul>
@@ -234,7 +234,7 @@
           </p>
           <ul>
             <li ng-repeat="file in findType('oneSheet')">
-              {{file.name}}
+              <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
             </li>
           </ul>
@@ -244,7 +244,7 @@
           </p>
           <ul>
             <li ng-repeat="file in findType('hsAndBs')">
-              {{file.name}}
+              <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
             </li>
           </ul>
@@ -254,7 +254,7 @@
           </p>
           <ul>
             <li ng-repeat="file in findType('descriptionDocument')">
-              {{file.name}}
+              <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
             </li>
           </ul>
@@ -264,7 +264,7 @@
           </p>
           <ul>
             <li ng-repeat="file in findType('other')">
-              {{file.name}}
+              <a href="{{file.url}}" target="_blank">{{file.name}}</a>
               <span ng-if="file.uploading">[Upload status: {{file.uploading}}]</span>
             </li>
           </ul>
